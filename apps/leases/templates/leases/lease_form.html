@@ -1,0 +1,20 @@
+{% extends "base_app.html" %}
+
+{% block title %}Lease form{% endblock %}
+{% block page_title %}{% if form.instance.pk %}Edit lease{% else %}Create lease{% endif %}{% endblock %}
+
+{% block content %}
+<div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+  <form method="post" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="{% if field.name == 'notes' or field.name == 'lease_document' %}md:col-span-2{% endif %}">
+        <label class="text-sm font-medium text-slate-700">{{ field.label }}</label>
+        {{ field }}
+        <div class="mt-1 text-sm text-rose-600">{{ field.errors }}</div>
+      </div>
+    {% endfor %}
+    <div class="md:col-span-2"><button type="submit" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Save lease</button></div>
+  </form>
+</div>
+{% endblock %}

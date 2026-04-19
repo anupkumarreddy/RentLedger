@@ -1,0 +1,12 @@
+{% extends "base_app.html" %}
+{% load common_tags %}
+{% block title %}Overdue{% endblock %}
+{% block page_title %}Overdue installments{% endblock %}
+{% block content %}
+<div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
+  <table class="min-w-full divide-y divide-slate-200 text-sm">
+    <thead class="bg-slate-50"><tr><th class="px-6 py-4 text-left text-slate-500">Lease</th><th class="px-6 py-4 text-left text-slate-500">Due date</th><th class="px-6 py-4 text-left text-slate-500">Outstanding</th></tr></thead>
+    <tbody class="divide-y divide-slate-100">{% for installment in installments %}<tr><td class="px-6 py-4"><a href="{{ installment.get_absolute_url }}" class="font-semibold text-slate-900">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</a></td><td class="px-6 py-4">{{ installment.due_date }}</td><td class="px-6 py-4">{{ installment.outstanding_amount|currency }}</td></tr>{% empty %}<tr><td class="px-6 py-6 text-slate-500" colspan="3">No overdue installments.</td></tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endblock %}
