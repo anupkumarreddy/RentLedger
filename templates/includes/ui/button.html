@@ -1,0 +1,13 @@
+{% if variant == "secondary" %}
+  {% with classes="btn-secondary" %}
+    <a href="{{ href }}" class="{{ classes }} {{ extra_classes|default:'' }}">{{ label }}</a>
+  {% endwith %}
+{% elif variant == "soft" %}
+  {% with classes="btn-soft" %}
+    <a href="{{ href }}" class="{{ classes }} {{ extra_classes|default:'' }}">{{ label }}</a>
+  {% endwith %}
+{% else %}
+  {% with classes="btn-primary" %}
+    <a href="{{ href }}" class="{{ classes }} {{ extra_classes|default:'' }}">{{ label }}</a>
+  {% endwith %}
+{% endif %}

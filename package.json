@@ -1,0 +1,20 @@
+{
+  "name": "rentledger",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/css/main.css -o ./static/css/app.css --minify",
+    "build:js": "mkdir -p ./static/js && cp ./node_modules/preline/dist/preline.js ./static/js/preline.js && cp ./assets/js/app.js ./static/js/app.js",
+    "build": "npm run build:css && npm run build:js",
+    "watch:css": "tailwindcss -i ./assets/css/main.css -o ./static/css/app.css --watch",
+    "watch": "npm run build:js && npm run watch:css"
+  },
+  "dependencies": {
+    "preline": "^3.2.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  }
+}
