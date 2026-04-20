@@ -2,25 +2,40 @@
 
 {% block title %}Tenants{% endblock %}
 {% block page_title %}Tenants{% endblock %}
-{% block page_actions %}<a href="{% url 'tenants:create' %}" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Add tenant</a>{% endblock %}
+{% block breadcrumb_title %}Tenants{% endblock %}
+{% block mobile_page_title %}Tenants{% endblock %}
+{% block page_actions %}<a href="{% url 'tenants:create' %}" class="btn-primary">Add tenant</a>{% endblock %}
 
 {% block content %}
-{% if tenants %}
-<div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50"><tr><th class="px-6 py-4 text-left text-slate-500">Tenant</th><th class="px-6 py-4 text-left text-slate-500">Phone</th><th class="px-6 py-4 text-left text-slate-500">Email</th></tr></thead>
-    <tbody class="divide-y divide-slate-100">
-      {% for tenant in tenants %}
+<div class="section-card">
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Tenant directory</h2>
+      <p class="mt-1 text-sm text-slate-500">Contact records and identification details for your renter portfolio.</p>
+    </div>
+    <span class="badge badge-slate">{{ tenants|length }} total</span>
+  </div>
+  {% if tenants %}
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
       <tr>
-        <td class="px-6 py-4"><a class="font-semibold text-slate-900" href="{{ tenant.get_absolute_url }}">{{ tenant.full_name }}</a></td>
-        <td class="px-6 py-4">{{ tenant.phone|default:"-" }}</td>
-        <td class="px-6 py-4">{{ tenant.email|default:"-" }}</td>
+        <th>Tenant</th>
+        <th>Phone</th>
+        <th>Email</th>
       </tr>
+    </thead>
+    <tbody>
+      {% for tenant in tenants %}
+        <tr>
+          <td><a class="link-strong" href="{{ tenant.get_absolute_url }}">{{ tenant.full_name }}</a></td>
+          <td>{{ tenant.phone|default:"-" }}</td>
+          <td>{{ tenant.email|default:"-" }}</td>
+        </tr>
       {% endfor %}
     </tbody>
-  </table>
+    {% include "includes/ui/table_shell_end.html" %}
+  {% else %}
+    {% include "includes/ui/empty_state.html" with title="No tenants yet" body="Create a tenant profile before starting a lease." %}
+  {% endif %}
 </div>
-{% else %}
-  {% include "includes/empty_state.html" with title="No tenants yet" body="Create a tenant profile before starting a lease." %}
-{% endif %}
 {% endblock %}

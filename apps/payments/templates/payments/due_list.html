@@ -1,13 +1,40 @@
 {% extends "base_app.html" %}
 {% load common_tags %}
+
 {% block title %}Dues{% endblock %}
 {% block page_title %}Due installments{% endblock %}
-{% block page_actions %}<div class="flex gap-3"><a href="{% url 'payments:create' %}" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Record payment</a><a href="{% url 'payments:history' %}" class="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Payment history</a></div>{% endblock %}
+{% block breadcrumb_title %}Payments{% endblock %}
+{% block mobile_page_title %}Due installments{% endblock %}
+{% block page_actions %}<div class="flex flex-wrap gap-3"><a href="{% url 'payments:create' %}" class="btn-primary">Record payment</a><a href="{% url 'payments:history' %}" class="btn-secondary">Payment history</a></div>{% endblock %}
+
 {% block content %}
-<div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50"><tr><th class="px-6 py-4 text-left text-slate-500">Lease</th><th class="px-6 py-4 text-left text-slate-500">Due date</th><th class="px-6 py-4 text-left text-slate-500">Status</th><th class="px-6 py-4 text-left text-slate-500">Outstanding</th></tr></thead>
-    <tbody class="divide-y divide-slate-100">{% for installment in installments %}<tr><td class="px-6 py-4"><a href="{{ installment.get_absolute_url }}" class="font-semibold text-slate-900">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</a></td><td class="px-6 py-4">{{ installment.due_date }}</td><td class="px-6 py-4">{{ installment.get_status_display }}</td><td class="px-6 py-4">{{ installment.outstanding_amount|currency }}</td></tr>{% endfor %}</tbody>
-  </table>
+<div class="section-card">
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Scheduled dues</h2>
+      <p class="mt-1 text-sm text-slate-500">Expected rent charges, current status, and outstanding balances.</p>
+    </div>
+    <span class="badge badge-amber">Actionable</span>
+  </div>
+  {% include "includes/ui/table_shell_start.html" %}
+  <thead>
+    <tr>
+      <th>Lease</th>
+      <th>Due date</th>
+      <th>Status</th>
+      <th>Outstanding</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for installment in installments %}
+      <tr>
+        <td><a href="{{ installment.get_absolute_url }}" class="link-strong">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</a></td>
+        <td>{{ installment.due_date }}</td>
+        <td><span class="badge badge-slate">{{ installment.get_status_display }}</span></td>
+        <td>{{ installment.outstanding_amount|currency }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  {% include "includes/ui/table_shell_end.html" %}
 </div>
 {% endblock %}

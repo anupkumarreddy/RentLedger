@@ -3,39 +3,97 @@
 
 {% block title %}Dashboard{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb_title %}Dashboard{% endblock %}
+{% block mobile_page_title %}Dashboard{% endblock %}
 
 {% block content %}
 <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-  <div class="rounded-3xl bg-slate-950 p-6 text-white shadow-lg"><p class="text-sm text-slate-300">Total properties</p><p class="mt-3 text-3xl font-semibold">{{ total_properties }}</p></div>
-  <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200"><p class="text-sm text-slate-500">Occupied units</p><p class="mt-3 text-3xl font-semibold text-slate-900">{{ occupied_units }}</p></div>
-  <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200"><p class="text-sm text-slate-500">Rent collected this month</p><p class="mt-3 text-3xl font-semibold text-slate-900">{{ monthly_collected_rent|currency }}</p></div>
-  <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200"><p class="text-sm text-slate-500">Overdue amount</p><p class="mt-3 text-3xl font-semibold text-rose-600">{{ overdue_amount|currency }}</p></div>
+  <div class="metric-card-strong">
+    <p class="text-sm text-slate-300">Total properties</p>
+    <p class="mt-3 text-3xl font-semibold">{{ total_properties }}</p>
+  </div>
+  <div class="metric-card">
+    <p class="text-sm text-slate-500">Occupied units</p>
+    <p class="mt-3 text-3xl font-semibold text-slate-900">{{ occupied_units }}</p>
+  </div>
+  <div class="metric-card">
+    <p class="text-sm text-slate-500">Rent collected this month</p>
+    <p class="mt-3 text-3xl font-semibold text-slate-900">{{ monthly_collected_rent|currency }}</p>
+  </div>
+  <div class="metric-card">
+    <p class="text-sm text-slate-500">Overdue amount</p>
+    <p class="mt-3 text-3xl font-semibold text-rose-600">{{ overdue_amount|currency }}</p>
+  </div>
 </section>
 
-<section class="mt-6 grid gap-6 xl:grid-cols-[1.4fr_1fr]">
-  <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.35fr_0.95fr]">
+  <div class="section-card">
     <h2 class="text-lg font-semibold text-slate-900">Cash flow snapshot</h2>
     <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-      <div><dt class="text-sm text-slate-500">Expected rent</dt><dd class="mt-1 text-xl font-semibold">{{ monthly_expected_rent|currency }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Expenses this month</dt><dd class="mt-1 text-xl font-semibold">{{ expenses_this_month|currency }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Net cash flow</dt><dd class="mt-1 text-xl font-semibold">{{ net_cash_flow|currency }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Vacant units</dt><dd class="mt-1 text-xl font-semibold">{{ vacant_units }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Expected rent</dt><dd class="mt-1 text-xl font-semibold text-slate-900">{{ monthly_expected_rent|currency }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Expenses this month</dt><dd class="mt-1 text-xl font-semibold text-slate-900">{{ expenses_this_month|currency }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Net cash flow</dt><dd class="mt-1 text-xl font-semibold text-slate-900">{{ net_cash_flow|currency }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Vacant units</dt><dd class="mt-1 text-xl font-semibold text-slate-900">{{ vacant_units }}</dd></div>
     </dl>
   </div>
-  <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">Upcoming expirations</h2>
-    <div class="mt-4 space-y-3">{% for lease in upcoming_expirations %}<div class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"><div class="font-semibold text-slate-900">{{ lease.property.name }}</div><div class="mt-1 text-slate-500">{{ lease.tenant.full_name }} - ends {{ lease.end_date }}</div></div>{% empty %}<p class="text-sm text-slate-500">No leases expiring in the next 30 days.</p>{% endfor %}</div>
+
+  <div class="section-card">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Upcoming expirations</h2>
+      <span class="badge badge-slate">Next 30 days</span>
+    </div>
+    <div class="space-y-3">
+      {% for lease in upcoming_expirations %}
+        <div class="surface-muted px-4 py-4 text-sm">
+          <div class="font-semibold text-slate-900">{{ lease.property.name }}</div>
+          <div class="mt-1 text-slate-500">{{ lease.tenant.full_name }} - ends {{ lease.end_date }}</div>
+        </div>
+      {% empty %}
+        <div class="table-empty">No leases expiring in the next 30 days.</div>
+      {% endfor %}
+    </div>
   </div>
 </section>
 
 <section class="mt-6 grid gap-6 xl:grid-cols-2">
-  <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">Upcoming dues</h2>
-    <div class="mt-4 space-y-3">{% for installment in upcoming_dues %}<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm"><div><div class="font-semibold text-slate-900">{{ installment.lease.property.name }}</div><div class="text-slate-500">{{ installment.lease.tenant.full_name }} - due {{ installment.due_date }}</div></div><span>{{ installment.outstanding_amount|currency }}</span></div>{% empty %}<p class="text-sm text-slate-500">No upcoming dues.</p>{% endfor %}</div>
+  <div class="section-card">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Upcoming dues</h2>
+      <span class="badge badge-amber">Actionable</span>
+    </div>
+    <div class="space-y-3">
+      {% for installment in upcoming_dues %}
+        <div class="surface-muted flex items-center justify-between gap-4 px-4 py-4 text-sm">
+          <div>
+            <div class="font-semibold text-slate-900">{{ installment.lease.property.name }}</div>
+            <div class="text-slate-500">{{ installment.lease.tenant.full_name }} - due {{ installment.due_date }}</div>
+          </div>
+          <span class="font-semibold text-slate-900">{{ installment.outstanding_amount|currency }}</span>
+        </div>
+      {% empty %}
+        <div class="table-empty">No upcoming dues.</div>
+      {% endfor %}
+    </div>
   </div>
-  <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">Recent payments</h2>
-    <div class="mt-4 space-y-3">{% for payment in recent_payments %}<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm"><div><div class="font-semibold text-slate-900">{{ payment.lease.property.name }}</div><div class="text-slate-500">{{ payment.tenant.full_name }} - {{ payment.payment_date }}</div></div><span>{{ payment.amount|currency }}</span></div>{% empty %}<p class="text-sm text-slate-500">No recent payments.</p>{% endfor %}</div>
+
+  <div class="section-card">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Recent payments</h2>
+      <a href="{% url 'payments:history' %}" class="btn-ghost !px-3 !py-2">View all</a>
+    </div>
+    <div class="space-y-3">
+      {% for payment in recent_payments %}
+        <div class="surface-muted flex items-center justify-between gap-4 px-4 py-4 text-sm">
+          <div>
+            <div class="font-semibold text-slate-900">{{ payment.lease.property.name }}</div>
+            <div class="text-slate-500">{{ payment.tenant.full_name }} - {{ payment.payment_date }}</div>
+          </div>
+          <span class="font-semibold text-slate-900">{{ payment.amount|currency }}</span>
+        </div>
+      {% empty %}
+        <div class="table-empty">No recent payments.</div>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}

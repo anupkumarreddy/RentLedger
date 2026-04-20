@@ -1,20 +1,37 @@
 {% extends "base_app.html" %}
 {% load common_tags %}
+
 {% block title %}Installment{% endblock %}
 {% block page_title %}Installment detail{% endblock %}
+{% block breadcrumb_title %}Payments{% endblock %}
+{% block mobile_page_title %}Installment{% endblock %}
+
 {% block content %}
 <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-  <section class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+  <section class="section-card">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Installment summary</h2>
+      <span class="badge badge-slate">Due</span>
+    </div>
     <dl class="grid gap-4 sm:grid-cols-2">
-      <div><dt class="text-sm text-slate-500">Lease</dt><dd class="mt-1 font-medium">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Due date</dt><dd class="mt-1 font-medium">{{ installment.due_date }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Amount due</dt><dd class="mt-1 font-medium">{{ installment.amount_due|currency }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Outstanding</dt><dd class="mt-1 font-medium">{{ installment.outstanding_amount|currency }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Lease</dt><dd class="mt-1 font-medium text-slate-900">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Due date</dt><dd class="mt-1 font-medium text-slate-900">{{ installment.due_date }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Amount due</dt><dd class="mt-1 font-medium text-slate-900">{{ installment.amount_due|currency }}</dd></div>
+      <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Outstanding</dt><dd class="mt-1 font-medium text-slate-900">{{ installment.outstanding_amount|currency }}</dd></div>
     </dl>
   </section>
-  <section class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">Allocations</h2>
-    <div class="mt-4 space-y-3">{% for allocation in installment.allocations.all %}<div class="rounded-2xl border border-slate-200 px-4 py-3 text-sm"><div class="flex items-center justify-between"><span>{{ allocation.payment.payment_date }}</span><span>{{ allocation.allocated_amount|currency }}</span></div></div>{% empty %}<p class="text-sm text-slate-500">No allocations yet.</p>{% endfor %}</div>
+  <section class="section-card">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Allocations</h2>
+      <span class="badge badge-slate">History</span>
+    </div>
+    <div class="space-y-3">
+      {% for allocation in installment.allocations.all %}
+        <div class="surface-muted flex items-center justify-between px-4 py-4 text-sm"><span>{{ allocation.payment.payment_date }}</span><span class="font-semibold text-slate-900">{{ allocation.allocated_amount|currency }}</span></div>
+      {% empty %}
+        <div class="table-empty">No allocations yet.</div>
+      {% endfor %}
+    </div>
   </section>
 </div>
 {% endblock %}

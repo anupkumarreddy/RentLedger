@@ -1,14 +1,48 @@
 {% extends "base_app.html" %}
 {% load common_tags %}
+
 {% block title %}Expenses{% endblock %}
 {% block page_title %}Expenses{% endblock %}
-{% block page_actions %}<a href="{% url 'expenses:create' %}" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Add expense</a>{% endblock %}
+{% block breadcrumb_title %}Expenses{% endblock %}
+{% block mobile_page_title %}Expenses{% endblock %}
+{% block page_actions %}<a href="{% url 'expenses:create' %}" class="btn-primary">Add expense</a>{% endblock %}
+
 {% block content %}
-<div class="mb-6 rounded-3xl bg-slate-900 p-6 text-white shadow-lg"><p class="text-sm uppercase tracking-[0.3em] text-slate-300">This month</p><p class="mt-2 text-3xl font-semibold">{{ monthly_total|currency }}</p></div>
-<div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50"><tr><th class="px-6 py-4 text-left text-slate-500">Date</th><th class="px-6 py-4 text-left text-slate-500">Category</th><th class="px-6 py-4 text-left text-slate-500">Property</th><th class="px-6 py-4 text-left text-slate-500">Amount</th></tr></thead>
-    <tbody class="divide-y divide-slate-100">{% for expense in expenses %}<tr><td class="px-6 py-4">{{ expense.expense_date }}</td><td class="px-6 py-4">{{ expense.get_category_display }}</td><td class="px-6 py-4">{{ expense.property.name|default:"-" }}</td><td class="px-6 py-4">{{ expense.amount|currency }}</td></tr>{% empty %}<tr><td colspan="4" class="px-6 py-6 text-slate-500">No expenses recorded.</td></tr>{% endfor %}</tbody>
-  </table>
+<div class="metric-card-strong mb-6">
+  <p class="text-sm uppercase tracking-[0.3em] text-slate-300">This month</p>
+  <p class="mt-2 text-3xl font-semibold">{{ monthly_total|currency }}</p>
+</div>
+
+<div class="section-card">
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Expense ledger</h2>
+      <p class="mt-1 text-sm text-slate-500">Maintenance, repair, tax, utility, and operating expenses for the rental portfolio.</p>
+    </div>
+    <span class="badge badge-slate">{{ expenses|length }} total</span>
+  </div>
+
+  {% include "includes/ui/table_shell_start.html" %}
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Category</th>
+      <th>Property</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for expense in expenses %}
+      <tr>
+        <td>{{ expense.expense_date }}</td>
+        <td>{{ expense.get_category_display }}</td>
+        <td>{{ expense.property.name|default:"-" }}</td>
+        <td>{{ expense.amount|currency }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4" class="table-empty">No expenses recorded.</td></tr>
+    {% endfor %}
+  </tbody>
+  {% include "includes/ui/table_shell_end.html" %}
 </div>
 {% endblock %}

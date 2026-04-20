@@ -3,27 +3,45 @@
 
 {% block title %}Properties{% endblock %}
 {% block page_title %}Properties{% endblock %}
-{% block page_actions %}<a href="{% url 'properties:create' %}" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Add property</a>{% endblock %}
+{% block breadcrumb_title %}Properties{% endblock %}
+{% block mobile_page_title %}Properties{% endblock %}
+{% block page_actions %}<a href="{% url 'properties:create' %}" class="btn-primary">Add property</a>{% endblock %}
 
 {% block content %}
-{% if properties %}
-<div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50 text-left text-slate-500"><tr><th class="px-6 py-4">Property</th><th class="px-6 py-4">Type</th><th class="px-6 py-4">Location</th><th class="px-6 py-4">Default rent</th><th class="px-6 py-4">Occupancy</th></tr></thead>
-    <tbody class="divide-y divide-slate-100">
-      {% for property in properties %}
+<div class="section-card">
+  <div class="mb-5 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Property portfolio</h2>
+      <p class="mt-1 text-sm text-slate-500">Every rentable unit with default rent and occupancy visibility.</p>
+    </div>
+    <span class="badge badge-slate">{{ properties|length }} total</span>
+  </div>
+
+  {% if properties %}
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
       <tr>
-        <td class="px-6 py-4"><a class="font-semibold text-slate-900" href="{{ property.get_absolute_url }}">{{ property.name }}</a></td>
-        <td class="px-6 py-4 capitalize">{{ property.get_property_type_display }}</td>
-        <td class="px-6 py-4">{{ property.city }}, {{ property.state }}</td>
-        <td class="px-6 py-4">{{ property.rent_default|currency }}</td>
-        <td class="px-6 py-4">{% if property.is_occupied %}<span class="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">Occupied</span>{% else %}<span class="rounded-full bg-amber-100 px-3 py-1 text-amber-700">Vacant</span>{% endif %}</td>
+        <th>Property</th>
+        <th>Type</th>
+        <th>Location</th>
+        <th>Default rent</th>
+        <th>Occupancy</th>
       </tr>
+    </thead>
+    <tbody>
+      {% for property in properties %}
+        <tr>
+          <td><a class="link-strong" href="{{ property.get_absolute_url }}">{{ property.name }}</a></td>
+          <td>{{ property.get_property_type_display }}</td>
+          <td>{{ property.city }}, {{ property.state }}</td>
+          <td>{{ property.rent_default|currency }}</td>
+          <td>{% if property.is_occupied %}<span class="badge badge-emerald">Occupied</span>{% else %}<span class="badge badge-amber">Vacant</span>{% endif %}</td>
+        </tr>
       {% endfor %}
     </tbody>
-  </table>
+    {% include "includes/ui/table_shell_end.html" %}
+  {% else %}
+    {% include "includes/ui/empty_state.html" with title="No properties yet" body="Add your first rentable unit to start tracking leases and collections." %}
+  {% endif %}
 </div>
-{% else %}
-  {% include "includes/empty_state.html" with title="No properties yet" body="Add your first rentable unit to start tracking leases and collections." %}
-{% endif %}
 {% endblock %}

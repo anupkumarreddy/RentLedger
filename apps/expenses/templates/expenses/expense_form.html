@@ -1,18 +1,26 @@
 {% extends "base_app.html" %}
+
 {% block title %}Add expense{% endblock %}
 {% block page_title %}Add expense{% endblock %}
+{% block breadcrumb_title %}Expenses{% endblock %}
+{% block mobile_page_title %}Add expense{% endblock %}
+
 {% block content %}
-<div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-  <form method="post" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
+<div class="form-panel">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Expense entry</h2>
+      <p class="mt-1 text-sm text-slate-500">Capture expense category, property, payment method, and supporting notes or attachments.</p>
+    </div>
+    <span class="badge badge-slate">Expense</span>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="grid gap-5 md:grid-cols-2">
     {% csrf_token %}
-    {% for field in form %}
-      <div class="{% if field.name == 'notes' or field.name == 'attachment' %}md:col-span-2{% endif %}">
-        <label class="text-sm font-medium text-slate-700">{{ field.label }}</label>
-        {{ field }}
-        <div class="mt-1 text-sm text-rose-600">{{ field.errors }}</div>
-      </div>
-    {% endfor %}
-    <div class="md:col-span-2"><button type="submit" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Save expense</button></div>
+    {% include "includes/ui/form_fields.html" with full_width_fields="notes,attachment" %}
+    <div class="md:col-span-2 flex gap-3 pt-2">
+      <button type="submit" class="btn-primary">Save expense</button>
+      <a href="{% url 'expenses:list' %}" class="btn-secondary">Cancel</a>
+    </div>
   </form>
 </div>
 {% endblock %}

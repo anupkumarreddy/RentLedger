@@ -2,15 +2,24 @@
 
 {% block title %}{{ tenant.full_name }}{% endblock %}
 {% block page_title %}{{ tenant.full_name }}{% endblock %}
-{% block page_actions %}<a href="{% url 'tenants:edit' tenant.pk %}" class="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Edit tenant</a>{% endblock %}
+{% block breadcrumb_title %}Tenants{% endblock %}
+{% block mobile_page_title %}{{ tenant.full_name }}{% endblock %}
+{% block page_actions %}<a href="{% url 'tenants:edit' tenant.pk %}" class="btn-secondary">Edit tenant</a>{% endblock %}
 
 {% block content %}
-<div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+<div class="section-card">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Tenant details</h2>
+      <p class="mt-1 text-sm text-slate-500">Contact, emergency, and identity information for this tenant.</p>
+    </div>
+    <span class="badge badge-slate">Tenant</span>
+  </div>
   <dl class="grid gap-4 md:grid-cols-2">
-    <div><dt class="text-sm text-slate-500">Email</dt><dd class="mt-1 font-medium">{{ tenant.email|default:"-" }}</dd></div>
-    <div><dt class="text-sm text-slate-500">Phone</dt><dd class="mt-1 font-medium">{{ tenant.phone|default:"-" }}</dd></div>
-    <div><dt class="text-sm text-slate-500">Government ID</dt><dd class="mt-1 font-medium">{{ tenant.government_id_type }} {{ tenant.government_id_value }}</dd></div>
-    <div><dt class="text-sm text-slate-500">Emergency contact</dt><dd class="mt-1 font-medium">{{ tenant.emergency_contact|default:"-" }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Email</dt><dd class="mt-1 font-medium text-slate-900">{{ tenant.email|default:"-" }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Phone</dt><dd class="mt-1 font-medium text-slate-900">{{ tenant.phone|default:"-" }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Government ID</dt><dd class="mt-1 font-medium text-slate-900">{{ tenant.government_id_type }} {{ tenant.government_id_value }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Emergency contact</dt><dd class="mt-1 font-medium text-slate-900">{{ tenant.emergency_contact|default:"-" }}</dd></div>
   </dl>
   {% if tenant.current_address %}<p class="mt-6 text-sm text-slate-600">{{ tenant.current_address }}</p>{% endif %}
   {% if tenant.notes %}<p class="mt-4 text-sm text-slate-600">{{ tenant.notes }}</p>{% endif %}

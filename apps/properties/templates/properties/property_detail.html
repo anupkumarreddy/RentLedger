@@ -3,19 +3,25 @@
 
 {% block title %}{{ property.name }}{% endblock %}
 {% block page_title %}{{ property.name }}{% endblock %}
-{% block page_actions %}<a href="{% url 'properties:edit' property.pk %}" class="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Edit property</a>{% endblock %}
+{% block breadcrumb_title %}Properties{% endblock %}
+{% block mobile_page_title %}{{ property.name }}{% endblock %}
+{% block page_actions %}<a href="{% url 'properties:edit' property.pk %}" class="btn-secondary">Edit property</a>{% endblock %}
 
 {% block content %}
-<div class="grid gap-6 lg:grid-cols-[2fr_1fr]">
-  <section class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">Property details</h2>
-    <dl class="mt-6 grid gap-4 sm:grid-cols-2">
-      <div><dt class="text-sm text-slate-500">Type</dt><dd class="mt-1 font-medium">{{ property.get_property_type_display }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Default rent</dt><dd class="mt-1 font-medium">{{ property.rent_default|currency }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Address</dt><dd class="mt-1 font-medium">{{ property.address_line_1 }}, {{ property.city }}</dd></div>
-      <div><dt class="text-sm text-slate-500">Country</dt><dd class="mt-1 font-medium">{{ property.country }}</dd></div>
-    </dl>
-    {% if property.notes %}<p class="mt-6 text-sm text-slate-600">{{ property.notes }}</p>{% endif %}
-  </section>
+<div class="section-card">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">Property details</h2>
+      <p class="mt-1 text-sm text-slate-500">View the key rental attributes and address details.</p>
+    </div>
+    <span class="badge badge-slate">{{ property.get_property_type_display }}</span>
+  </div>
+  <dl class="grid gap-4 sm:grid-cols-2">
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Type</dt><dd class="mt-1 font-medium text-slate-900">{{ property.get_property_type_display }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Default rent</dt><dd class="mt-1 font-medium text-slate-900">{{ property.rent_default|currency }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Address</dt><dd class="mt-1 font-medium text-slate-900">{{ property.address_line_1 }}, {{ property.city }}</dd></div>
+    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Country</dt><dd class="mt-1 font-medium text-slate-900">{{ property.country }}</dd></div>
+  </dl>
+  {% if property.notes %}<p class="mt-6 text-sm text-slate-600">{{ property.notes }}</p>{% endif %}
 </div>
 {% endblock %}

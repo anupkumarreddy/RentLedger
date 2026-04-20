@@ -5,14 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}RentLedger{% endblock %}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=preline-ui-1">
 </head>
-<body class="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.18),_transparent_40%),linear-gradient(180deg,_#f8fafc_0%,_#e2e8f0_100%)] text-slate-900">
-  <main class="px-6 py-12">
+<body class="auth-shell min-h-screen text-slate-900">
+  <main class="px-6 py-12 lg:py-16">
     {% include "includes/messages.html" %}
     {% block content %}{% endblock %}
   </main>
+  <script src="{% static 'js/preline.js' %}"></script>
+  <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>

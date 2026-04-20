@@ -1,11 +1,35 @@
 def navigation(_request):
     return {
         "navigation_items": [
-            {"label": "Dashboard", "url": "dashboard:home"},
-            {"label": "Properties", "url": "properties:list"},
-            {"label": "Tenants", "url": "tenants:list"},
-            {"label": "Leases", "url": "leases:list"},
-            {"label": "Payments", "url": "payments:due_list"},
-            {"label": "Expenses", "url": "expenses:list"},
+            {
+                "label": "Dashboard",
+                "url": "dashboard:home",
+                "icon": "M3 9.75 12 3l9 6.75V20.25A1.75 1.75 0 0 1 19.25 22H4.75A1.75 1.75 0 0 1 3 20.25V9.75Z",
+            },
+            {
+                "label": "Properties",
+                "url": "properties:list",
+                "icon": "M2.25 21h19.5M4.5 21V8.25L12 3l7.5 5.25V21M9 21v-6.75h6V21",
+            },
+            {
+                "label": "Tenants",
+                "url": "tenants:list",
+                "icon": "M15 19.128A9.38 9.38 0 0 0 12 18.75c-1.082 0-2.12.183-3 .52M15 19.128a3.375 3.375 0 1 0-6 0M15 19.128a9 9 0 1 0-6 0M12 12.75a3.375 3.375 0 1 0 0-6.75 3.375 3.375 0 0 0 0 6.75Z",
+            },
+            {
+                "label": "Leases",
+                "url": "leases:list",
+                "icon": "M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5A3.375 3.375 0 0 0 10.125 2.25H6.75A3.375 3.375 0 0 0 3.375 5.625v12.75A3.375 3.375 0 0 0 6.75 21.75h9.75A3.375 3.375 0 0 0 19.875 18.375V16.5",
+            },
+            {
+                "label": "Payments",
+                "url": "payments:due_list",
+                "icon": "M2.25 8.25h19.5m-18 0A2.25 2.25 0 0 1 6 6h12a2.25 2.25 0 0 1 2.25 2.25m-18 0v7.5A2.25 2.25 0 0 0 4.5 18h15a2.25 2.25 0 0 0 2.25-2.25v-7.5m-13.5 4.5h3.75",
+            },
+            {
+                "label": "Expenses",
+                "url": "expenses:list",
+                "icon": "M9 14.25 6.75 12m0 0L9 9.75m-2.25 2.25H15m6 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+            },
         ]
     }

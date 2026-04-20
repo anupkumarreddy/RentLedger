@@ -3,24 +3,25 @@
 {% block title %}Sign in{% endblock %}
 
 {% block content %}
-<div class="mx-auto max-w-md rounded-3xl bg-white p-8 shadow-xl shadow-slate-200">
-  <h1 class="text-3xl font-bold text-slate-900">Sign in</h1>
-  <p class="mt-2 text-sm text-slate-600">Access your landlord workspace.</p>
-  <form method="post" class="mt-6 space-y-4">
+<div class="mx-auto max-w-md auth-card">
+  <div class="mb-8">
+    <p class="stat-kicker text-cyan-700">Welcome back</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-900">Sign in to RentLedger</h1>
+    <p class="mt-2 text-sm text-slate-600">Access your landlord workspace and continue managing leases, dues, and cash flow.</p>
+  </div>
+
+  <form method="post" class="space-y-5">
     {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
-      <div>
-        <label class="text-sm font-medium text-slate-700">{{ field.label }}</label>
-        {{ field }}
-        <div class="mt-1 text-sm text-rose-600">{{ field.errors }}</div>
-      </div>
-    {% endfor %}
-    <button type="submit" class="w-full rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Sign in</button>
+    {% if form.non_field_errors %}
+      <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{{ form.non_field_errors }}</div>
+    {% endif %}
+    {% include "includes/ui/form_fields.html" with full_width_fields="username,password" %}
+    <button type="submit" class="btn-primary w-full">Sign in</button>
   </form>
-  <div class="mt-6 flex justify-between text-sm text-slate-600">
-    <a href="{% url 'accounts:signup' %}">Create account</a>
-    <a href="{% url 'password_reset' %}">Forgot password</a>
+
+  <div class="mt-6 flex items-center justify-between text-sm text-slate-600">
+    <a href="{% url 'accounts:signup' %}" class="font-medium text-cyan-700 hover:text-cyan-800">Create account</a>
+    <a href="{% url 'password_reset' %}" class="font-medium text-slate-700 hover:text-slate-900">Forgot password</a>
   </div>
 </div>
 {% endblock %}

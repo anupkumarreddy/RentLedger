@@ -3,31 +3,48 @@
 {% block title %}RentLedger{% endblock %}
 
 {% block content %}
-<section class="mx-auto max-w-4xl rounded-3xl bg-white/90 p-10 shadow-2xl shadow-slate-200">
-  <div class="grid gap-8 lg:grid-cols-2 lg:items-center">
-    <div>
-      <p class="text-sm font-semibold uppercase tracking-[0.3em] text-sky-600">RentLedger</p>
-      <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900">Rental operations without spreadsheet drift.</h1>
-      <p class="mt-4 text-lg text-slate-600">Track leases, installments, collections, expenses, and occupancy from one landlord dashboard.</p>
-      <div class="mt-8 flex gap-4">
-        <a href="{% url 'accounts:signup' %}" class="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white">Create account</a>
-        <a href="{% url 'accounts:login' %}" class="rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Sign in</a>
+<section class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+  <div class="auth-card">
+    <span class="inline-flex items-center rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700">Rental operations</span>
+    <h1 class="mt-6 text-5xl font-bold tracking-tight text-slate-900">Landlord operations in one clear application workspace.</h1>
+    <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">RentLedger helps manage properties, tenants, leases, rent schedules, collections, and expenses without spreadsheet drift.</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="{% url 'accounts:signup' %}" class="btn-primary">Create account</a>
+      <a href="{% url 'accounts:login' %}" class="btn-secondary">Sign in</a>
+    </div>
+    <div class="mt-10 grid gap-4 sm:grid-cols-3">
+      <div class="surface-muted p-4">
+        <p class="stat-kicker">Expected rent</p>
+        <p class="mt-2 text-lg font-semibold text-slate-900">Auto-scheduled installments</p>
+      </div>
+      <div class="surface-muted p-4">
+        <p class="stat-kicker">Collections</p>
+        <p class="mt-2 text-lg font-semibold text-slate-900">Partial allocation aware</p>
+      </div>
+      <div class="surface-muted p-4">
+        <p class="stat-kicker">Visibility</p>
+        <p class="mt-2 text-lg font-semibold text-slate-900">Clear dues and cash flow</p>
       </div>
     </div>
-    <div class="rounded-2xl bg-slate-900 p-6 text-white">
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div class="rounded-2xl bg-white/10 p-4">
-          <p class="text-sm text-slate-300">Expected rent</p>
-          <p class="mt-2 text-2xl font-semibold">Auto-scheduled</p>
-        </div>
-        <div class="rounded-2xl bg-white/10 p-4">
-          <p class="text-sm text-slate-300">Partial payments</p>
-          <p class="mt-2 text-2xl font-semibold">Allocation aware</p>
-        </div>
-        <div class="rounded-2xl bg-white/10 p-4 sm:col-span-2">
-          <p class="text-sm text-slate-300">Control center</p>
-          <p class="mt-2 text-2xl font-semibold">Properties, tenants, leases, dues, and expenses in one view.</p>
-        </div>
+  </div>
+
+  <div class="metric-card-strong space-y-5 rounded-3xl">
+    <div>
+      <p class="text-sm uppercase tracking-[0.3em] text-slate-300">Portfolio snapshot</p>
+      <h2 class="mt-3 text-3xl font-semibold text-white">Built for recurring rental workflows.</h2>
+    </div>
+    <div class="grid gap-4">
+      <div class="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
+        <p class="text-sm text-slate-300">Lease control</p>
+        <p class="mt-2 text-xl font-semibold">Track start dates, dues, deposits, status, and expirations.</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
+        <p class="text-sm text-slate-300">Payment visibility</p>
+        <p class="mt-2 text-xl font-semibold">Record rent collections and allocate them against the correct installments.</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
+        <p class="text-sm text-slate-300">Owner-focused dashboard</p>
+        <p class="mt-2 text-xl font-semibold">See occupancy, dues, overdue amounts, expenses, and recent activity together.</p>
       </div>
     </div>
   </div>
