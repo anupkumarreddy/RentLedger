@@ -33,21 +33,35 @@
       <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Security deposit</dt><dd class="mt-1 font-medium text-slate-900">{{ lease.security_deposit|currency }}</dd></div>
     </dl>
   </section>
-  <section class="section-card">
-    <div class="mb-4 flex items-center justify-between">
+  <section class="section-card-tight">
+    <div class="table-toolbar">
       <h2 class="text-lg font-semibold text-slate-900">Installment schedule</h2>
-      <span class="badge badge-slate">Billing</span>
+      <span class="table-toolbar-meta">Billing</span>
     </div>
-    <div class="space-y-3">
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Billing period</th>
+        <th>Due date</th>
+        <th>Status</th>
+        <th>Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for installment in lease.installments.all %}
-        <div class="surface-muted px-4 py-4 text-sm">
-          <div class="flex items-center justify-between gap-4"><span class="font-medium text-slate-900">{{ installment.billing_period_start }} - {{ installment.billing_period_end }}</span><span class="font-semibold text-slate-900">{{ installment.outstanding_amount|currency }}</span></div>
-          <div class="mt-1 text-slate-500">Due {{ installment.due_date }} / {{ installment.get_status_display }}</div>
-        </div>
+        <tr>
+          <td>
+            <div class="table-cell-title">{{ installment.billing_period_start }} - {{ installment.billing_period_end }}</div>
+          </td>
+          <td>{{ installment.due_date }}</td>
+          <td><span class="badge badge-slate">{{ installment.get_status_display }}</span></td>
+          <td><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
+        </tr>
       {% empty %}
-        <div class="table-empty">Activate the lease to generate installments.</div>
+        <tr><td colspan="4" class="table-empty">Activate the lease to generate installments.</td></tr>
       {% endfor %}
-    </div>
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
   </section>
 </div>
 {% endblock %}

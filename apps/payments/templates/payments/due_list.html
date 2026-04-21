@@ -8,13 +8,13 @@
 {% block page_actions %}<div class="flex flex-wrap gap-3"><a href="{% url 'payments:create' %}" class="btn-primary">Record payment</a><a href="{% url 'payments:history' %}" class="btn-secondary">Payment history</a></div>{% endblock %}
 
 {% block content %}
-<div class="section-card">
-  <div class="mb-5 flex items-center justify-between">
+<div class="section-card-tight">
+  <div class="table-toolbar">
     <div>
       <h2 class="text-lg font-semibold text-slate-900">Scheduled dues</h2>
       <p class="mt-1 text-sm text-slate-500">Expected rent charges, current status, and outstanding balances.</p>
     </div>
-    <span class="badge badge-amber">Actionable</span>
+    <span class="table-toolbar-meta">Actionable</span>
   </div>
   {% include "includes/ui/table_shell_start.html" %}
   <thead>
@@ -25,16 +25,24 @@
       <th>Outstanding</th>
     </tr>
   </thead>
-  <tbody>
-    {% for installment in installments %}
-      <tr>
-        <td><a href="{{ installment.get_absolute_url }}" class="link-strong">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</a></td>
-        <td>{{ installment.due_date }}</td>
-        <td><span class="badge badge-slate">{{ installment.get_status_display }}</span></td>
-        <td>{{ installment.outstanding_amount|currency }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
+    <tbody>
+      {% for installment in installments %}
+        <tr>
+          <td>
+            <a href="{{ installment.get_absolute_url }}" class="table-cell-title hover:text-cyan-700">{{ installment.lease.property.name }}</a>
+            <div class="table-cell-subtitle">{{ installment.lease.tenant.full_name }}</div>
+          </td>
+          <td>
+            <div class="text-sm text-slate-700">{{ installment.due_date }}</div>
+            <div class="table-cell-subtitle">Billing cycle item</div>
+          </td>
+          <td><span class="badge badge-slate">{{ installment.get_status_display }}</span></td>
+          <td><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="table-empty">No due installments right now.</td></tr>
+      {% endfor %}
+    </tbody>
   {% include "includes/ui/table_shell_end.html" %}
 </div>
 {% endblock %}

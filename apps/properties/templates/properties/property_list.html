@@ -8,13 +8,13 @@
 {% block page_actions %}<a href="{% url 'properties:create' %}" class="btn-primary">Add property</a>{% endblock %}
 
 {% block content %}
-<div class="section-card">
-  <div class="mb-5 flex items-center justify-between">
+<div class="section-card-tight">
+  <div class="table-toolbar">
     <div>
       <h2 class="text-lg font-semibold text-slate-900">Property portfolio</h2>
       <p class="mt-1 text-sm text-slate-500">Every rentable unit with default rent and occupancy visibility.</p>
     </div>
-    <span class="badge badge-slate">{{ properties|length }} total</span>
+    <span class="table-toolbar-meta">{{ properties|length }} total</span>
   </div>
 
   {% if properties %}
@@ -31,10 +31,16 @@
     <tbody>
       {% for property in properties %}
         <tr>
-          <td><a class="link-strong" href="{{ property.get_absolute_url }}">{{ property.name }}</a></td>
-          <td>{{ property.get_property_type_display }}</td>
-          <td>{{ property.city }}, {{ property.state }}</td>
-          <td>{{ property.rent_default|currency }}</td>
+          <td>
+            <a class="table-cell-title hover:text-cyan-700" href="{{ property.get_absolute_url }}">{{ property.name }}</a>
+            <div class="table-cell-subtitle">{{ property.address_line_1|default:"Rental unit" }}</div>
+          </td>
+          <td><span class="badge badge-slate">{{ property.get_property_type_display }}</span></td>
+          <td>
+            <div class="text-sm text-slate-700">{{ property.city }}, {{ property.state }}</div>
+            <div class="table-cell-subtitle">{{ property.country|default:"Managed portfolio" }}</div>
+          </td>
+          <td><span class="table-cell-title">{{ property.rent_default|currency }}</span></td>
           <td>{% if property.is_occupied %}<span class="badge badge-emerald">Occupied</span>{% else %}<span class="badge badge-amber">Vacant</span>{% endif %}</td>
         </tr>
       {% endfor %}

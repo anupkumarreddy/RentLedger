@@ -37,63 +37,91 @@
     </dl>
   </div>
 
-  <div class="section-card">
-    <div class="mb-4 flex items-center justify-between">
+  <div class="section-card-tight">
+    <div class="table-toolbar">
       <h2 class="text-lg font-semibold text-slate-900">Upcoming expirations</h2>
-      <span class="badge badge-slate">Next 30 days</span>
+      <span class="table-toolbar-meta">Next 30 days</span>
     </div>
-    <div class="space-y-3">
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Tenant</th>
+        <th>Ends</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for lease in upcoming_expirations %}
-        <div class="surface-muted px-4 py-4 text-sm">
-          <div class="font-semibold text-slate-900">{{ lease.property.name }}</div>
-          <div class="mt-1 text-slate-500">{{ lease.tenant.full_name }} - ends {{ lease.end_date }}</div>
-        </div>
+        <tr>
+          <td><div class="table-cell-title">{{ lease.property.name }}</div></td>
+          <td>{{ lease.tenant.full_name }}</td>
+          <td><span class="table-cell-title">{{ lease.end_date }}</span></td>
+        </tr>
       {% empty %}
-        <div class="table-empty">No leases expiring in the next 30 days.</div>
+        <tr><td colspan="3" class="table-empty">No leases expiring in the next 30 days.</td></tr>
       {% endfor %}
-    </div>
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
   </div>
 </section>
 
 <section class="mt-6 grid gap-6 xl:grid-cols-2">
-  <div class="section-card">
-    <div class="mb-4 flex items-center justify-between">
+  <div class="section-card-tight">
+    <div class="table-toolbar">
       <h2 class="text-lg font-semibold text-slate-900">Upcoming dues</h2>
-      <span class="badge badge-amber">Actionable</span>
+      <span class="table-toolbar-meta">Actionable</span>
     </div>
-    <div class="space-y-3">
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Tenant</th>
+        <th>Due date</th>
+        <th>Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for installment in upcoming_dues %}
-        <div class="surface-muted flex items-center justify-between gap-4 px-4 py-4 text-sm">
-          <div>
-            <div class="font-semibold text-slate-900">{{ installment.lease.property.name }}</div>
-            <div class="text-slate-500">{{ installment.lease.tenant.full_name }} - due {{ installment.due_date }}</div>
-          </div>
-          <span class="font-semibold text-slate-900">{{ installment.outstanding_amount|currency }}</span>
-        </div>
+        <tr>
+          <td><div class="table-cell-title">{{ installment.lease.property.name }}</div></td>
+          <td>{{ installment.lease.tenant.full_name }}</td>
+          <td>{{ installment.due_date }}</td>
+          <td><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
+        </tr>
       {% empty %}
-        <div class="table-empty">No upcoming dues.</div>
+        <tr><td colspan="4" class="table-empty">No upcoming dues.</td></tr>
       {% endfor %}
-    </div>
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
   </div>
 
-  <div class="section-card">
-    <div class="mb-4 flex items-center justify-between">
+  <div class="section-card-tight">
+    <div class="table-toolbar">
       <h2 class="text-lg font-semibold text-slate-900">Recent payments</h2>
       <a href="{% url 'payments:history' %}" class="btn-ghost !px-3 !py-2">View all</a>
     </div>
-    <div class="space-y-3">
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Tenant</th>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for payment in recent_payments %}
-        <div class="surface-muted flex items-center justify-between gap-4 px-4 py-4 text-sm">
-          <div>
-            <div class="font-semibold text-slate-900">{{ payment.lease.property.name }}</div>
-            <div class="text-slate-500">{{ payment.tenant.full_name }} - {{ payment.payment_date }}</div>
-          </div>
-          <span class="font-semibold text-slate-900">{{ payment.amount|currency }}</span>
-        </div>
+        <tr>
+          <td><div class="table-cell-title">{{ payment.lease.property.name }}</div></td>
+          <td>{{ payment.tenant.full_name }}</td>
+          <td>{{ payment.payment_date }}</td>
+          <td><span class="table-cell-title">{{ payment.amount|currency }}</span></td>
+        </tr>
       {% empty %}
-        <div class="table-empty">No recent payments.</div>
+        <tr><td colspan="4" class="table-empty">No recent payments.</td></tr>
       {% endfor %}
-    </div>
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
   </div>
 </section>
 {% endblock %}

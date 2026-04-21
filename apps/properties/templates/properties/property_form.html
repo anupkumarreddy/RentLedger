@@ -6,21 +6,22 @@
 {% block mobile_page_title %}{% if form.instance.pk %}Edit property{% else %}Add property{% endif %}{% endblock %}
 
 {% block content %}
-<div class="form-panel">
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">Property details</h2>
-      <p class="mt-1 text-sm text-slate-500">Capture location, type, rent defaults, and notes for this rentable unit.</p>
+<div class="form-page-wrap">
+  <div class="form-modal-shell">
+    <div class="form-modal-header">
+      <h2 class="form-modal-title">Property details</h2>
+      <p class="form-modal-description">Capture location, type, rent defaults, and operating notes in a clean application form layout.</p>
     </div>
-    <span class="badge badge-slate">Property</span>
+    <div class="form-modal-body">
+      <form method="post" class="form-stack">
+      {% csrf_token %}
+      {% include "includes/ui/form_fields.html" with full_width_fields="notes" %}
+        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
+          <a href="{% url 'properties:list' %}" class="btn-secondary">Cancel</a>
+          <button type="submit" class="btn-primary">Save property</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <form method="post" class="grid gap-5 md:grid-cols-2">
-    {% csrf_token %}
-    {% include "includes/ui/form_fields.html" with full_width_fields="notes" %}
-    <div class="md:col-span-2 flex gap-3 pt-2">
-      <button type="submit" class="btn-primary">Save property</button>
-      <a href="{% url 'properties:list' %}" class="btn-secondary">Cancel</a>
-    </div>
-  </form>
 </div>
 {% endblock %}

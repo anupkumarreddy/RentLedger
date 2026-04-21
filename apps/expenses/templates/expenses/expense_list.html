@@ -13,13 +13,13 @@
   <p class="mt-2 text-3xl font-semibold">{{ monthly_total|currency }}</p>
 </div>
 
-<div class="section-card">
-  <div class="mb-5 flex items-center justify-between">
+<div class="section-card-tight">
+  <div class="table-toolbar">
     <div>
       <h2 class="text-lg font-semibold text-slate-900">Expense ledger</h2>
       <p class="mt-1 text-sm text-slate-500">Maintenance, repair, tax, utility, and operating expenses for the rental portfolio.</p>
     </div>
-    <span class="badge badge-slate">{{ expenses|length }} total</span>
+    <span class="table-toolbar-meta">{{ expenses|length }} total</span>
   </div>
 
   {% include "includes/ui/table_shell_start.html" %}
@@ -31,16 +31,22 @@
       <th>Amount</th>
     </tr>
   </thead>
-  <tbody>
-    {% for expense in expenses %}
-      <tr>
-        <td>{{ expense.expense_date }}</td>
-        <td>{{ expense.get_category_display }}</td>
-        <td>{{ expense.property.name|default:"-" }}</td>
-        <td>{{ expense.amount|currency }}</td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="4" class="table-empty">No expenses recorded.</td></tr>
+    <tbody>
+      {% for expense in expenses %}
+        <tr>
+          <td>
+            <div class="table-cell-title">{{ expense.expense_date }}</div>
+            <div class="table-cell-subtitle">{{ expense.payment_method|default:"Recorded expense" }}</div>
+          </td>
+          <td><span class="badge badge-slate">{{ expense.get_category_display }}</span></td>
+          <td>
+            <div class="text-sm font-medium text-slate-800">{{ expense.property.name|default:"Unassigned" }}</div>
+            <div class="table-cell-subtitle">{{ expense.notes|default:"No notes added"|truncatechars:52 }}</div>
+          </td>
+          <td><span class="table-cell-title">{{ expense.amount|currency }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="table-empty">No expenses recorded.</td></tr>
     {% endfor %}
   </tbody>
   {% include "includes/ui/table_shell_end.html" %}

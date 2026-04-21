@@ -1,8 +1,13 @@
 {% for field in form %}
-  <div class="{% if field.name in full_width_fields %}md:col-span-2{% endif %}">
-    <label class="field-label">{{ field.label }}</label>
-    {{ field }}
-    {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
-    {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+  <div class="form-row{% if field.name in full_width_fields %} form-row-full{% endif %}">
+    <div class="form-row-label">
+      <label class="field-label">{{ field.label }}</label>
+      {% if field.help_text %}<p class="form-help sm:pr-6">{{ field.help_text }}</p>{% endif %}
+      {% if field.field.required %}<p class="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Required</p>{% endif %}
+    </div>
+    <div class="form-row-field">
+      {{ field }}
+      {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+    </div>
   </div>
 {% endfor %}

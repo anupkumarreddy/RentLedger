@@ -6,21 +6,22 @@
 {% block mobile_page_title %}Add expense{% endblock %}
 
 {% block content %}
-<div class="form-panel">
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">Expense entry</h2>
-      <p class="mt-1 text-sm text-slate-500">Capture expense category, property, payment method, and supporting notes or attachments.</p>
+<div class="form-page-wrap">
+  <div class="form-modal-shell">
+    <div class="form-modal-header">
+      <h2 class="form-modal-title">Expense entry</h2>
+      <p class="form-modal-description">Capture category, property, payment channel, and supporting notes or attachments with a Preline-style modal form layout.</p>
     </div>
-    <span class="badge badge-slate">Expense</span>
+    <div class="form-modal-body">
+      <form method="post" enctype="multipart/form-data" class="form-stack">
+      {% csrf_token %}
+      {% include "includes/ui/form_fields.html" with full_width_fields="notes,attachment" %}
+        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
+          <a href="{% url 'expenses:list' %}" class="btn-secondary">Cancel</a>
+          <button type="submit" class="btn-primary">Save expense</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <form method="post" enctype="multipart/form-data" class="grid gap-5 md:grid-cols-2">
-    {% csrf_token %}
-    {% include "includes/ui/form_fields.html" with full_width_fields="notes,attachment" %}
-    <div class="md:col-span-2 flex gap-3 pt-2">
-      <button type="submit" class="btn-primary">Save expense</button>
-      <a href="{% url 'expenses:list' %}" class="btn-secondary">Cancel</a>
-    </div>
-  </form>
 </div>
 {% endblock %}

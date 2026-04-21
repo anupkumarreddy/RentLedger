@@ -6,13 +6,21 @@
 {% block mobile_page_title %}Profile{% endblock %}
 
 {% block content %}
-<div class="form-panel">
-  <form method="post" class="grid gap-5 md:grid-cols-2">
-    {% csrf_token %}
-    {% include "includes/ui/form_fields.html" with full_width_fields="" %}
-    <div class="md:col-span-2 flex gap-3 pt-2">
-      <button type="submit" class="btn-primary">Save changes</button>
+<div class="form-page-wrap">
+  <div class="form-modal-shell">
+    <div class="form-modal-header">
+      <h2 class="form-modal-title">Profile settings</h2>
+      <p class="form-modal-description">Manage your name, email, and account details with a clean Preline-inspired modal layout.</p>
     </div>
-  </form>
+    <div class="form-modal-body">
+      <form method="post" class="form-stack">
+        {% csrf_token %}
+        {% include "includes/ui/form_fields.html" with full_width_fields="" %}
+        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
+          <button type="submit" class="btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

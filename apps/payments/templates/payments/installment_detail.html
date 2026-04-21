@@ -20,18 +20,31 @@
       <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Outstanding</dt><dd class="mt-1 font-medium text-slate-900">{{ installment.outstanding_amount|currency }}</dd></div>
     </dl>
   </section>
-  <section class="section-card">
-    <div class="mb-4 flex items-center justify-between">
+  <section class="section-card-tight">
+    <div class="table-toolbar">
       <h2 class="text-lg font-semibold text-slate-900">Allocations</h2>
-      <span class="badge badge-slate">History</span>
+      <span class="table-toolbar-meta">History</span>
     </div>
-    <div class="space-y-3">
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Payment date</th>
+        <th>Method</th>
+        <th>Allocated</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for allocation in installment.allocations.all %}
-        <div class="surface-muted flex items-center justify-between px-4 py-4 text-sm"><span>{{ allocation.payment.payment_date }}</span><span class="font-semibold text-slate-900">{{ allocation.allocated_amount|currency }}</span></div>
+        <tr>
+          <td><div class="table-cell-title">{{ allocation.payment.payment_date }}</div></td>
+          <td><span class="badge badge-slate">{{ allocation.payment.get_payment_method_display }}</span></td>
+          <td><span class="table-cell-title">{{ allocation.allocated_amount|currency }}</span></td>
+        </tr>
       {% empty %}
-        <div class="table-empty">No allocations yet.</div>
+        <tr><td colspan="3" class="table-empty">No allocations yet.</td></tr>
       {% endfor %}
-    </div>
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
   </section>
 </div>
 {% endblock %}

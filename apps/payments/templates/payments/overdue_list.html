@@ -7,13 +7,13 @@
 {% block mobile_page_title %}Overdue installments{% endblock %}
 
 {% block content %}
-<div class="section-card">
-  <div class="mb-5 flex items-center justify-between">
+<div class="section-card-tight">
+  <div class="table-toolbar">
     <div>
       <h2 class="text-lg font-semibold text-slate-900">Overdue balances</h2>
       <p class="mt-1 text-sm text-slate-500">Installments that have crossed their due date and still have outstanding balance.</p>
     </div>
-    <span class="badge badge-rose">Overdue</span>
+    <span class="table-toolbar-meta">Overdue</span>
   </div>
   {% include "includes/ui/table_shell_start.html" %}
   <thead>
@@ -23,15 +23,21 @@
       <th>Outstanding</th>
     </tr>
   </thead>
-  <tbody>
-    {% for installment in installments %}
-      <tr>
-        <td><a href="{{ installment.get_absolute_url }}" class="link-strong">{{ installment.lease.property.name }} / {{ installment.lease.tenant.full_name }}</a></td>
-        <td>{{ installment.due_date }}</td>
-        <td><span class="badge badge-rose">{{ installment.outstanding_amount|currency }}</span></td>
-      </tr>
-    {% empty %}
-      <tr><td class="table-empty" colspan="3">No overdue installments.</td></tr>
+    <tbody>
+      {% for installment in installments %}
+        <tr>
+          <td>
+            <a href="{{ installment.get_absolute_url }}" class="table-cell-title hover:text-cyan-700">{{ installment.lease.property.name }}</a>
+            <div class="table-cell-subtitle">{{ installment.lease.tenant.full_name }}</div>
+          </td>
+          <td>
+            <div class="text-sm text-slate-700">{{ installment.due_date }}</div>
+            <div class="table-cell-subtitle">Past due item</div>
+          </td>
+          <td><span class="badge badge-rose">{{ installment.outstanding_amount|currency }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td class="table-empty" colspan="3">No overdue installments.</td></tr>
     {% endfor %}
   </tbody>
   {% include "includes/ui/table_shell_end.html" %}
