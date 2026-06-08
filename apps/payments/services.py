@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
 
-from apps.common.models import InstallmentStatus, PaymentFrequency, quantize_money
+from apps.common.models import InstallmentStatus, LateFeeType, PaymentFrequency, quantize_money
 from apps.payments.models import LeaseInstallment, Payment, PaymentAllocation
 
 
@@ -23,7 +23,25 @@ def due_date_for_period(period_start, due_day):
     return period_start.replace(day=min(due_day, monthrange(period_start.year, period_start.month)[1]))
 
 
+def calculate_late_fee(installment):
+    lease = installment.lease
+    if lease.late_fee_type == LateFeeType.NONE:
+        return Decimal("0.00")
+
+    grace_cutoff = installment.due_date + timedelta(days=lease.grace_days)
+    if timezone.localdate() <= grace_cutoff:
+        return Decimal("0.00")
+
+    if lease.late_fee_type == LateFeeType.FIXED:
+        return quantize_money(lease.late_fee_value)
+    if lease.late_fee_type == LateFeeType.PERCENTAGE:
+        base_amount = quantize_money(installment.amount_due + installment.adjustment_amount)
+        return quantize_money(base_amount * lease.late_fee_value / Decimal("100"))
+    return Decimal("0.00")
+
+
 def recalculate_installment(installment):
+    installment.late_fee_amount = calculate_late_fee(installment)
     total_due = quantize_money(installment.amount_due + installment.late_fee_amount + installment.adjustment_amount)
     amount_paid = installment.allocations.aggregate(total=Sum("allocated_amount")).get("total") or Decimal("0.00")
     installment.amount_paid = quantize_money(amount_paid)
@@ -41,7 +59,7 @@ def recalculate_installment(installment):
     if installment.outstanding_amount > 0 and timezone.localdate() > grace_cutoff:
         installment.status = InstallmentStatus.OVERDUE
 
-    installment.save(update_fields=["amount_paid", "outstanding_amount", "status", "updated_at"])
+    installment.save(update_fields=["late_fee_amount", "amount_paid", "outstanding_amount", "status", "updated_at"])
     return installment
 
 
@@ -81,6 +99,7 @@ def allocate_payment(payment, installments=None):
     for installment in installments:
         if remaining <= 0:
             break
+        recalculate_installment(installment)
         allocatable = min(remaining, installment.outstanding_amount)
         if allocatable <= 0:
             continue
@@ -99,11 +118,19 @@ def record_payment(*, landlord, created_by, **data):
     if tenant.id != lease.tenant_id:
         raise ValidationError("The selected tenant must match the lease tenant.")
 
-    payment = Payment.objects.create(landlord=landlord, created_by=created_by, **data)
+    payment = Payment(landlord=landlord, created_by=created_by, **data)
+    payment.full_clean()
+    payment.save()
     allocate_payment(payment)
     return payment
 
 
 def refresh_overdue_statuses(landlord):
-    for installment in LeaseInstallment.objects.filter(landlord=landlord).select_related("lease"):
+    today = timezone.localdate()
+    queryset = LeaseInstallment.objects.filter(
+        landlord=landlord,
+        due_date__lt=today,
+        outstanding_amount__gt=0,
+    ).exclude(status=InstallmentStatus.PAID).select_related("lease")
+    for installment in queryset:
         recalculate_installment(installment)

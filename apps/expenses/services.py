@@ -7,4 +7,7 @@ def record_expense(*, landlord, **data):
     property_obj = data.get("property")
     if property_obj and property_obj.landlord_id != landlord.id:
         raise ValidationError("Property must belong to the current landlord.")
-    return Expense.objects.create(landlord=landlord, **data)
+    expense = Expense(landlord=landlord, **data)
+    expense.full_clean()
+    expense.save()
+    return expense

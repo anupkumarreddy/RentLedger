@@ -9,7 +9,7 @@ def due_installments_for_landlord(landlord):
 
 
 def overdue_installments_for_landlord(landlord):
-    return due_installments_for_landlord(landlord).filter(status=InstallmentStatus.OVERDUE)
+    return due_installments_for_landlord(landlord).filter(status=InstallmentStatus.OVERDUE, outstanding_amount__gt=0)
 
 
 def payments_for_landlord(landlord):
