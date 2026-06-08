@@ -26,15 +26,13 @@ ENV/
 # Django
 db.sqlite3
 db.sqlite3-journal
+*.sqlite3
+*.sqlite3-journal
 media/
 staticfiles/
 __pypackages__/
 *.log
 local_settings.py
-
-# Django migrations
-**/migrations/
-!**/migrations/__init__.py
 
 # IDEs and editors
 .idea/

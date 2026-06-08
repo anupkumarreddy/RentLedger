@@ -1,4 +1,8 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 
 from apps.common.models import IsActiveMixin, LandlordOwnedModel, PropertyType, TimeStampedModel
@@ -13,12 +17,15 @@ class Property(TimeStampedModel, IsActiveMixin, LandlordOwnedModel):
     state = models.CharField(max_length=120)
     postal_code = models.CharField(max_length=20, blank=True)
     country = models.CharField(max_length=120, default="India")
-    rent_default = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    rent_default = models.DecimalField(max_digits=12, decimal_places=2, default=0, validators=[MinValueValidator(Decimal("0.00"))])
     notes = models.TextField(blank=True)
 
     class Meta:
         ordering = ["name"]
         indexes = [models.Index(fields=["landlord", "is_active"])]
+        constraints = [
+            models.CheckConstraint(condition=Q(rent_default__gte=0), name="properties_rent_default_non_negative"),
+        ]
 
     def __str__(self):
         return self.name

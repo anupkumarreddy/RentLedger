@@ -7,10 +7,13 @@ from apps.common.models import InstallmentStatus, LeaseStatus
 from apps.expenses.models import Expense
 from apps.leases.models import Lease
 from apps.payments.models import LeaseInstallment, Payment
+from apps.payments.queries import overdue_installments_for_landlord
+from apps.payments.services import refresh_overdue_statuses
 from apps.properties.models import Property
 
 
 def dashboard_snapshot(landlord):
+    refresh_overdue_statuses(landlord)
     today = timezone.localdate()
     month_start = today.replace(day=1)
     next_30 = today + timedelta(days=30)
@@ -20,7 +23,8 @@ def dashboard_snapshot(landlord):
     active_leases = Lease.objects.filter(landlord=landlord, status=LeaseStatus.ACTIVE)
     rent_due = LeaseInstallment.objects.filter(landlord=landlord, due_date__range=(month_start, today)).aggregate(total=Sum("amount_due"))["total"] or 0
     collected = Payment.objects.filter(landlord=landlord, payment_date__range=(month_start, today)).aggregate(total=Sum("amount"))["total"] or 0
-    overdue_amount = sum(i.outstanding_amount for i in LeaseInstallment.objects.filter(landlord=landlord) if i.is_overdue_now)
+    overdue_installments = overdue_installments_for_landlord(landlord)
+    overdue_amount = overdue_installments.aggregate(total=Sum("outstanding_amount"))["total"] or 0
     expenses_total = Expense.objects.filter(landlord=landlord, expense_date__range=(month_start, today)).aggregate(total=Sum("amount"))["total"] or 0
 
     return {
@@ -37,5 +41,5 @@ def dashboard_snapshot(landlord):
         "recent_payments": Payment.objects.filter(landlord=landlord).select_related("lease", "tenant", "lease__property")[:5],
         "recent_expenses": Expense.objects.filter(landlord=landlord).select_related("property")[:5],
         "upcoming_dues": LeaseInstallment.objects.filter(landlord=landlord, due_date__gte=today).select_related("lease", "lease__property", "lease__tenant")[:5],
-        "overdue_installments": [i for i in LeaseInstallment.objects.filter(landlord=landlord).select_related("lease", "lease__property", "lease__tenant") if i.is_overdue_now][:5],
+        "overdue_installments": overdue_installments[:5],
     }

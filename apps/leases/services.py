@@ -26,7 +26,9 @@ def create_lease(*, landlord, **data):
     if data.get("status") == LeaseStatus.ACTIVE:
         validate_no_overlap(property_obj=property_obj, start_date=data["start_date"], end_date=data["end_date"])
 
-    lease = Lease.objects.create(landlord=landlord, **data)
+    lease = Lease(landlord=landlord, **data)
+    lease.full_clean()
+    lease.save()
     if lease.status == LeaseStatus.ACTIVE:
         generate_payment_schedule(lease)
     return lease

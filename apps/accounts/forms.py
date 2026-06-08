@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.password_validation import validate_password
 
 from apps.common.forms import BaseStyledForm
 
@@ -28,6 +29,16 @@ class SignupForm(BaseStyledForm):
         password2 = cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             self.add_error("password2", "Passwords do not match.")
+        if password1:
+            user = User(
+                full_name=cleaned_data.get("full_name", ""),
+                email=cleaned_data.get("email", ""),
+                phone=cleaned_data.get("phone", ""),
+            )
+            try:
+                validate_password(password1, user)
+            except forms.ValidationError as error:
+                self.add_error("password1", error)
         return cleaned_data
 
     def save(self, commit=True):
@@ -52,3 +63,12 @@ class ProfileForm(BaseStyledForm):
     class Meta:
         model = User
         fields = ["full_name", "email", "phone"]
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].lower()
+        queryset = User.objects.filter(email=email)
+        if self.instance.pk:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email

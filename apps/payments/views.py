@@ -6,7 +6,7 @@ from django.views.generic import CreateView, DetailView, ListView
 from django.db.models import QuerySet
 
 from apps.payments.forms import PaymentForm
-from apps.payments.queries import due_installments_for_landlord, payments_for_landlord
+from apps.payments.queries import due_installments_for_landlord, overdue_installments_for_landlord, payments_for_landlord
 from apps.payments.services import record_payment, refresh_overdue_statuses
 
 
@@ -25,9 +25,7 @@ class OverdueListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self) -> QuerySet:
         refresh_overdue_statuses(self.request.user)
-        installments = due_installments_for_landlord(self.request.user)
-        overdue_ids = [item.pk for item in installments if item.is_overdue_now]
-        return installments.filter(pk__in=overdue_ids)
+        return overdue_installments_for_landlord(self.request.user)
 
 
 class InstallmentDetailView(LoginRequiredMixin, DetailView):
