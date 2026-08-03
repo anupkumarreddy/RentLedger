@@ -4,24 +4,25 @@
 {% block page_title %}Record payment{% endblock %}
 {% block breadcrumb_title %}Payments{% endblock %}
 {% block mobile_page_title %}Record payment{% endblock %}
+{% block page_subtitle %}Payments are auto-allocated against the oldest outstanding installments.{% endblock %}
 
 {% block content %}
 <div class="form-page-wrap">
   <div class="form-modal-shell">
     <div class="form-modal-header">
       <h2 class="form-modal-title">Payment entry</h2>
-      <p class="form-modal-description">Record a payment and let the system allocate it against outstanding installments using a cleaner modal-style form surface.</p>
+      <p class="form-modal-description">Record a payment and the system allocates it against outstanding installments for the lease.</p>
     </div>
-    <div class="form-modal-body">
-      <form method="post" class="form-stack">
+    <form method="post">
       {% csrf_token %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="notes,audit_note" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'payments:history' %}" class="btn-secondary">Cancel</a>
-          <button type="submit" class="btn-primary">Save payment</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-modal-body">
+        {% include "includes/ui/form_fields.html" with full_width_fields="notes,audit_note" %}
+      </div>
+      <div class="form-modal-footer">
+        <a href="{% url 'payments:history' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-brand">Save payment</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}

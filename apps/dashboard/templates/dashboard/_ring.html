@@ -1,0 +1,14 @@
+{% comment %} value (0-100), label, tone (brand|emerald) {% endcomment %}
+<div class="flex flex-col items-center rounded-xl border border-slate-200/70 bg-slate-50/60 p-4">
+  <div class="relative size-24">
+    <svg class="size-24 -rotate-90" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+      <circle cx="50" cy="50" r="40" fill="none"
+              stroke="{% if tone == 'emerald' %}#10b981{% else %}#4f46e5{% endif %}"
+              stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="{% widthratio value 100 251 %} 251"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center text-lg font-bold text-slate-900">{{ value }}%</div>
+  </div>
+  <p class="mt-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{{ label }}</p>
+</div>

@@ -3,20 +3,28 @@
 {% block title %}Create account{% endblock %}
 
 {% block content %}
-<div class="form-page-wrap">
-  <div class="form-modal-shell">
-    <div class="form-modal-header">
-      <h1 class="form-modal-title">Create your landlord account</h1>
-      <p class="form-modal-description">Set up your workspace to start managing properties, tenants, leases, and rent collection with a clean, structured form layout.</p>
+<div class="mx-auto flex min-h-[80vh] max-w-2xl items-center">
+  <div class="w-full">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="inline-flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-base font-bold text-white shadow-lift">RL</span>
+      <div>
+        <p class="text-lg font-semibold text-white">RentLedger</p>
+        <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Landlord workspace</p>
+      </div>
     </div>
-
-    <div class="form-modal-body">
-      <form method="post" class="form-stack">
-      {% csrf_token %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="password1,password2" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 !justify-between sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'accounts:login' %}" class="btn-secondary">Already have an account?</a>
-          <button type="submit" class="btn-primary">Create account</button>
+    <div class="form-modal-shell w-full">
+      <div class="form-modal-header">
+        <h1 class="form-modal-title">Create your account</h1>
+        <p class="form-modal-description">Set up your workspace to manage properties, tenants, leases, and rent collection.</p>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-modal-body">
+          {% include "includes/ui/form_fields.html" with full_width_fields="password1,password2" %}
+        </div>
+        <div class="form-modal-footer">
+          <a href="{% url 'accounts:login' %}" class="btn-ghost">Already have an account?</a>
+          <button type="submit" class="btn-brand">Create account</button>
         </div>
       </form>
     </div>

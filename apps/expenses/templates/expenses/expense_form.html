@@ -4,24 +4,25 @@
 {% block page_title %}Add expense{% endblock %}
 {% block breadcrumb_title %}Expenses{% endblock %}
 {% block mobile_page_title %}Add expense{% endblock %}
+{% block page_subtitle %}Track maintenance, tax, utility, and operating costs against a property.{% endblock %}
 
 {% block content %}
 <div class="form-page-wrap">
   <div class="form-modal-shell">
     <div class="form-modal-header">
       <h2 class="form-modal-title">Expense entry</h2>
-      <p class="form-modal-description">Capture category, property, payment channel, and supporting notes or attachments with a Preline-style modal form layout.</p>
+      <p class="form-modal-description">Capture category, property, payment channel, and supporting notes or attachments.</p>
     </div>
-    <div class="form-modal-body">
-      <form method="post" enctype="multipart/form-data" class="form-stack">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="notes,attachment" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'expenses:list' %}" class="btn-secondary">Cancel</a>
-          <button type="submit" class="btn-primary">Save expense</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-modal-body">
+        {% include "includes/ui/form_fields.html" with full_width_fields="notes,attachment" %}
+      </div>
+      <div class="form-modal-footer">
+        <a href="{% url 'expenses:list' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-brand">Save expense</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}

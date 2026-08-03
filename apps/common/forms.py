@@ -6,9 +6,19 @@ class DateInput(forms.DateInput):
 
 
 class BaseStyledForm(forms.ModelForm):
+    """Base ModelForm.
+
+    Field widgets inherit their look from the global ``input/select/textarea``
+    styles in ``main.css``; here we only nudge widget-specific classes that the
+    base layer intentionally skips (checkboxes).
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            css_class = "mt-1 block w-full rounded-xl border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm focus:border-brand-500 focus:ring-brand-500"
-            existing = field.widget.attrs.get("class", "")
-            field.widget.attrs["class"] = f"{existing} {css_class}".strip()
+            widget = field.widget
+            if isinstance(widget, forms.CheckboxInput):
+                widget.attrs.setdefault(
+                    "class",
+                    "size-5 rounded-md border-slate-300 text-brand-600 focus:ring-brand-500/30",
+                )

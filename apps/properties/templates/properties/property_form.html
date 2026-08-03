@@ -4,24 +4,25 @@
 {% block page_title %}{% if form.instance.pk %}Edit property{% else %}Add property{% endif %}{% endblock %}
 {% block breadcrumb_title %}Properties{% endblock %}
 {% block mobile_page_title %}{% if form.instance.pk %}Edit property{% else %}Add property{% endif %}{% endblock %}
+{% block page_subtitle %}Location, type, rent defaults, and operating notes.{% endblock %}
 
 {% block content %}
 <div class="form-page-wrap">
   <div class="form-modal-shell">
     <div class="form-modal-header">
       <h2 class="form-modal-title">Property details</h2>
-      <p class="form-modal-description">Capture location, type, rent defaults, and operating notes in a clean application form layout.</p>
+      <p class="form-modal-description">Capture location, type, and rent defaults for this unit.</p>
     </div>
-    <div class="form-modal-body">
-      <form method="post" class="form-stack">
+    <form method="post">
       {% csrf_token %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="notes" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'properties:list' %}" class="btn-secondary">Cancel</a>
-          <button type="submit" class="btn-primary">Save property</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-modal-body">
+        {% include "includes/ui/form_fields.html" with full_width_fields="address_line_1,address_line_2,notes" %}
+      </div>
+      <div class="form-modal-footer">
+        <a href="{% url 'properties:list' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-brand">Save property</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}

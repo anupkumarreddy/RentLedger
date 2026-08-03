@@ -3,28 +3,33 @@
 {% block title %}Sign in{% endblock %}
 
 {% block content %}
-<div class="form-page-wrap">
-  <div class="form-modal-shell-compact">
-    <div class="form-modal-header">
-      <h1 class="form-modal-title">Sign in to RentLedger</h1>
-      <p class="form-modal-description">Access your landlord workspace and continue managing leases, dues, collections, and operating records.</p>
+<div class="mx-auto flex min-h-[80vh] max-w-md items-center">
+  <div class="w-full">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="inline-flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-base font-bold text-white shadow-lift">RL</span>
+      <div>
+        <p class="text-lg font-semibold text-white">RentLedger</p>
+        <p class="text-xs uppercase tracking-[0.24em] text-slate-400">Landlord workspace</p>
+      </div>
     </div>
-    <div class="form-modal-body">
-      <form method="post" class="form-stack">
-      {% csrf_token %}
-      {% if form.non_field_errors %}
-        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{{ form.non_field_errors }}</div>
-      {% endif %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="username,password" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 !justify-between sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'password_reset' %}" class="font-medium text-slate-700 hover:text-slate-900">Forgot password</a>
-          <button type="submit" class="btn-primary">Sign in</button>
+    <div class="form-modal-shell-compact w-full">
+      <div class="form-modal-header">
+        <h1 class="form-modal-title">Welcome back</h1>
+        <p class="form-modal-description">Sign in to manage leases, dues, and collections.</p>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-modal-body">
+          {% include "includes/ui/form_fields.html" with full_width_fields="username,password" %}
+          <div class="mt-4 text-right">
+            <a href="{% url 'password_reset' %}" class="text-sm font-medium text-brand-600 hover:text-brand-700">Forgot password?</a>
+          </div>
+        </div>
+        <div class="form-modal-footer">
+          <a href="{% url 'accounts:signup' %}" class="btn-ghost">Create account</a>
+          <button type="submit" class="btn-brand">Sign in</button>
         </div>
       </form>
-
-      <div class="mt-6 text-sm text-slate-600">
-        New to RentLedger? <a href="{% url 'accounts:signup' %}" class="font-medium text-cyan-700 hover:text-cyan-800">Create account</a>
-      </div>
     </div>
   </div>
 </div>
