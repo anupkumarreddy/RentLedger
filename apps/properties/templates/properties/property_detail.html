@@ -5,23 +5,90 @@
 {% block page_title %}{{ property.name }}{% endblock %}
 {% block breadcrumb_title %}Properties{% endblock %}
 {% block mobile_page_title %}{{ property.name }}{% endblock %}
-{% block page_actions %}<a href="{% url 'properties:edit' property.pk %}" class="btn-secondary">Edit property</a>{% endblock %}
+{% block page_subtitle %}{{ property.address_line_1 }}, {{ property.city }}, {{ property.state }}{% endblock %}
+{% block page_actions %}
+<div class="flex flex-wrap gap-2">
+  <a href="{% url 'properties:list' %}" class="btn-secondary">Back</a>
+  {% if property.is_active %}
+    <form method="post" action="{% url 'properties:archive' property.pk %}" onsubmit="return confirm('Archive this property?');">{% csrf_token %}<button class="btn-secondary">Archive</button></form>
+  {% else %}
+    <form method="post" action="{% url 'properties:archive' property.pk %}">{% csrf_token %}<button class="btn-secondary">Restore</button></form>
+  {% endif %}
+  <a href="{% url 'properties:edit' property.pk %}" class="btn-brand" hx-get="{% url 'properties:edit' property.pk %}" hx-target="#modal-root" hx-swap="innerHTML">Edit property</a>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="section-card">
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">Property details</h2>
-      <p class="mt-1 text-sm text-slate-500">View the key rental attributes and address details.</p>
+<section class="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  <div class="metric-card"><p class="metric-label">Status</p><p class="mt-3">{% if active_lease %}<span class="badge badge-emerald"><span class="badge-dot"></span>Occupied</span>{% else %}<span class="badge badge-amber"><span class="badge-dot"></span>Vacant</span>{% endif %}</p></div>
+  <div class="metric-card"><p class="metric-label">Monthly rent</p><p class="metric-value">{{ monthly_rent|currency }}</p></div>
+  <div class="metric-card"><p class="metric-label">Outstanding</p><p class="metric-value {% if outstanding_amount > 0 %}text-rose-600{% endif %}">{{ outstanding_amount|currency }}</p></div>
+  <div class="metric-card"><p class="metric-label">Expenses (YTD)</p><p class="metric-value">{{ ytd_expenses|currency }}</p></div>
+</section>
+
+<div class="grid gap-5 xl:grid-cols-[1fr_1.4fr]">
+  <section class="section-card h-fit">
+    <div class="mb-5 flex items-center justify-between">
+      <h2 class="section-heading">Property details</h2>
+      <span class="badge badge-slate">{{ property.get_property_type_display }}</span>
     </div>
-    <span class="badge badge-slate">{{ property.get_property_type_display }}</span>
+    <dl class="space-y-2.5">
+      <div class="data-row"><dt class="data-row-label">Type</dt><dd class="data-row-value">{{ property.get_property_type_display }}</dd></div>
+      <div class="data-row"><dt class="data-row-label">Default rent</dt><dd class="data-row-value">{{ property.rent_default|currency }}</dd></div>
+      <div class="data-row"><dt class="data-row-label">Address</dt><dd class="data-row-value text-right">{{ property.address_line_1 }}{% if property.address_line_2 %}, {{ property.address_line_2 }}{% endif %}</dd></div>
+      <div class="data-row"><dt class="data-row-label">City / State</dt><dd class="data-row-value">{{ property.city }}, {{ property.state }}</dd></div>
+      <div class="data-row"><dt class="data-row-label">Postal code</dt><dd class="data-row-value">{{ property.postal_code|default:"—" }}</dd></div>
+      <div class="data-row"><dt class="data-row-label">Country</dt><dd class="data-row-value">{{ property.country }}</dd></div>
+    </dl>
+    {% if property.notes %}<p class="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">{{ property.notes }}</p>{% endif %}
+  </section>
+
+  <div class="space-y-5">
+    <section class="section-card-tight">
+      <div class="table-toolbar">
+        <div>
+          <h2 class="section-heading">Lease history</h2>
+          <p class="section-subheading">{{ lease_count }} lease{{ lease_count|pluralize }} on this property.</p>
+        </div>
+        <a href="{% url 'leases:create' %}" class="btn-ghost btn-sm" hx-get="{% url 'leases:create' %}" hx-target="#modal-root" hx-swap="innerHTML">New lease</a>
+      </div>
+      {% include "includes/ui/table_shell_start.html" %}
+      <thead><tr><th>Tenant</th><th>Term</th><th class="text-right">Rent</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for lease in leases %}
+          <tr>
+            <td><a href="{{ lease.get_absolute_url }}" class="table-cell-title hover:text-brand-700">{{ lease.tenant.full_name }}</a></td>
+            <td class="text-slate-600">{{ lease.start_date }} – {{ lease.end_date }}</td>
+            <td class="text-right"><span class="table-cell-title">{{ lease.rent_amount|currency }}</span></td>
+            <td><span class="badge {{ lease.status|badge_class }}">{{ lease.get_status_display }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="table-empty">No leases recorded for this property yet.</td></tr>
+        {% endfor %}
+      </tbody>
+      {% include "includes/ui/table_shell_end.html" %}
+    </section>
+
+    <section class="section-card-tight">
+      <div class="table-toolbar">
+        <h2 class="section-heading">Recent expenses</h2>
+        <a href="{% url 'expenses:create' %}" class="btn-ghost btn-sm" hx-get="{% url 'expenses:create' %}" hx-target="#modal-root" hx-swap="innerHTML">Add expense</a>
+      </div>
+      {% include "includes/ui/table_shell_start.html" %}
+      <thead><tr><th>Date</th><th>Category</th><th class="text-right">Amount</th></tr></thead>
+      <tbody>
+        {% for expense in recent_expenses %}
+          <tr>
+            <td class="text-slate-600">{{ expense.expense_date }}</td>
+            <td><span class="badge badge-brand">{{ expense.get_category_display }}</span></td>
+            <td class="text-right"><span class="table-cell-title">{{ expense.amount|currency }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3" class="table-empty">No expenses recorded for this property.</td></tr>
+        {% endfor %}
+      </tbody>
+      {% include "includes/ui/table_shell_end.html" %}
+    </section>
   </div>
-  <dl class="grid gap-4 sm:grid-cols-2">
-    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Type</dt><dd class="mt-1 font-medium text-slate-900">{{ property.get_property_type_display }}</dd></div>
-    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Default rent</dt><dd class="mt-1 font-medium text-slate-900">{{ property.rent_default|currency }}</dd></div>
-    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Address</dt><dd class="mt-1 font-medium text-slate-900">{{ property.address_line_1 }}, {{ property.city }}</dd></div>
-    <div class="surface-muted p-4"><dt class="text-sm text-slate-500">Country</dt><dd class="mt-1 font-medium text-slate-900">{{ property.country }}</dd></div>
-  </dl>
-  {% if property.notes %}<p class="mt-6 text-sm text-slate-600">{{ property.notes }}</p>{% endif %}
 </div>
 {% endblock %}

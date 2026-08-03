@@ -1,13 +1,29 @@
-{% for field in form %}
-  <div class="form-row{% if field.name in full_width_fields %} form-row-full{% endif %}">
-    <div class="form-row-label">
-      <label class="field-label">{{ field.label }}</label>
-      {% if field.help_text %}<p class="form-help sm:pr-6">{{ field.help_text }}</p>{% endif %}
-      {% if field.field.required %}<p class="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Required</p>{% endif %}
-    </div>
-    <div class="form-row-field">
-      {{ field }}
-      {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
-    </div>
+{% load common_tags %}
+{% if form.non_field_errors %}
+  <div class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+    {{ form.non_field_errors }}
   </div>
-{% endfor %}
+{% endif %}
+<div class="form-grid">
+  {% for field in form %}
+    {% if field.field.widget.input_type == "checkbox" %}
+      <div class="form-field form-field-full">
+        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3">
+          {{ field }}
+          <span class="text-sm font-medium text-slate-700">{{ field.label }}</span>
+        </label>
+        {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+        {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+      </div>
+    {% else %}
+      <div class="form-field{% if field.name in full_width_fields|split %} form-field-full{% endif %}">
+        <label class="field-label" for="{{ field.id_for_label }}">
+          {{ field.label }}{% if field.field.required %}<span class="field-required-dot">*</span>{% endif %}
+        </label>
+        {{ field }}
+        {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+        {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

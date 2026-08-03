@@ -87,4 +87,9 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "dashboard:home"
 LOGOUT_REDIRECT_URL = "accounts:login"
+
+# Email — console backend prints messages (incl. password-reset links) to the
+# runserver console in development. Swap EMAIL_BACKEND for SMTP in production.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "RentLedger <no-reply@rentledger.app>"
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3  # 3 days

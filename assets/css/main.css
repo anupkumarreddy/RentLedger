@@ -12,291 +12,363 @@
     border-spacing: 0;
   }
 
-  input,
+  input:not([type="checkbox"]):not([type="radio"]),
   select,
   textarea {
-    @apply block w-full rounded-2xl border border-slate-300 bg-white px-5 py-3.5 text-base text-slate-800 shadow-sm shadow-slate-200/60 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100;
+    @apply block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15;
   }
 
   textarea {
-    @apply min-h-[10rem];
+    @apply min-h-[7rem];
   }
 
-  input::placeholder,
-  textarea::placeholder {
-    @apply text-slate-400;
+  ::selection {
+    @apply bg-brand-500/20;
   }
 }
 
 @layer components {
+  /* ---------- App canvas ---------- */
   .app-shell {
-    background-color: #f3f4f6;
-    background-image: none;
+    background-color: #f5f6fb;
+    background-image:
+      radial-gradient(1200px 600px at 100% -10%, rgba(99, 102, 241, 0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(14, 165, 233, 0.06), transparent 55%);
+    background-attachment: fixed;
   }
 
   .auth-shell {
-    background-color: #f3f4f6;
-    background-image: none;
+    background-color: #0f172a;
+    background-image:
+      radial-gradient(900px 600px at 15% 10%, rgba(99, 102, 241, 0.35), transparent 55%),
+      radial-gradient(800px 600px at 100% 100%, rgba(14, 165, 233, 0.28), transparent 55%);
+    background-attachment: fixed;
   }
 
+  /* ---------- Sidebar ---------- */
   .sidebar-shell {
-    @apply bg-white/80 backdrop-blur-xl;
-    box-shadow: 12px 0 40px -30px rgba(15, 23, 42, 0.18);
+    @apply bg-white/85 backdrop-blur-xl;
+    box-shadow: 14px 0 50px -34px rgba(15, 23, 42, 0.28);
   }
 
   .sidebar-scroll::-webkit-scrollbar {
     width: 8px;
   }
-
   .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.28);
+    background: rgba(148, 163, 184, 0.3);
     border-radius: 999px;
   }
-
   .sidebar-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
 
   .sidebar-nav-link {
-    @apply flex items-center gap-x-3.5 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+    @apply relative flex items-center gap-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100/80 hover:text-slate-900;
   }
-
+  .sidebar-nav-link .nav-icon {
+    @apply flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:text-slate-700;
+  }
   .sidebar-nav-link-active {
-    @apply bg-slate-900 text-white shadow-sm hover:bg-slate-900 hover:text-white;
+    @apply bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-lift hover:from-brand-600 hover:to-brand-500 hover:text-white;
+  }
+  .sidebar-nav-link-active .nav-icon {
+    @apply bg-white/20 text-white;
   }
 
+  /* ---------- Topbar ---------- */
   .topbar-shell {
-    @apply sticky top-4 z-10 rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm shadow-slate-200/80 backdrop-blur;
+    @apply sticky top-4 z-10 rounded-2xl border border-white/70 bg-white/75 px-5 py-4 shadow-card backdrop-blur-xl sm:px-6;
+  }
+  .breadcrumb-chip {
+    @apply inline-flex items-center gap-2 text-xs font-medium text-slate-500;
   }
 
+  /* ---------- Cards / surfaces ---------- */
   .page-shell {
     @apply rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl shadow-slate-200/50 backdrop-blur;
   }
-
-  .form-page-wrap {
-    @apply mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8;
-  }
-
-  .form-modal-shell {
-    @apply mx-auto max-w-4xl rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70;
-  }
-
-  .form-modal-shell-compact {
-    @apply mx-auto max-w-2xl rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70;
-  }
-
   .metric-card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70;
+    @apply relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-lg;
   }
-
   .metric-card-strong {
-    @apply rounded-2xl bg-slate-900 p-6 text-white shadow-lg shadow-slate-300/30;
+    @apply relative overflow-hidden rounded-2xl bg-slate-900 p-5 text-white shadow-lg;
   }
-
+  .metric-card-strong::after {
+    content: "";
+    @apply pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-brand-500/30 blur-2xl;
+  }
+  .metric-label {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-slate-500;
+  }
+  .metric-value {
+    @apply mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl;
+  }
+  .metric-icon {
+    @apply flex size-10 items-center justify-center rounded-xl;
+  }
   .section-card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70;
+    @apply rounded-2xl border border-slate-200/80 bg-white p-6 shadow-card;
   }
-
   .section-card-tight {
-    @apply rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/70 sm:p-6;
+    @apply rounded-2xl border border-slate-200/80 bg-white p-4 shadow-card sm:p-6;
   }
-
   .surface-muted {
-    @apply rounded-2xl border border-slate-200 bg-slate-50;
+    @apply rounded-xl border border-slate-200/70 bg-slate-50/80;
   }
-
-  .table-shell {
-    @apply flex flex-col;
+  .section-heading {
+    @apply text-base font-semibold text-slate-900;
   }
-
-  .table-shell-scroll {
-    @apply -m-1.5 overflow-x-auto;
-  }
-
-  .table-shell-inner {
-    @apply inline-block min-w-full p-1.5 align-middle;
-  }
-
-  .table-shell-card {
-    @apply overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/80;
-  }
-
-  .table-root {
-    @apply min-w-full text-sm;
-  }
-
-  .table-root thead {
-    @apply bg-slate-50/90;
-  }
-
-  .table-root th {
-    @apply whitespace-nowrap border-b border-slate-200 px-6 py-5 text-left text-xs font-semibold uppercase tracking-[0.08em] text-slate-700;
-  }
-
-  .table-root td {
-    @apply border-b border-slate-200 px-6 py-7 align-middle text-slate-700;
-  }
-
-  .table-root tbody tr td {
-    border-bottom: 1px solid rgb(226 232 240);
-  }
-
-  .table-root tbody tr {
-    @apply bg-white transition hover:bg-slate-50/70;
-  }
-
-  .table-cell-title {
-    @apply text-[1.05rem] font-semibold text-slate-800;
-  }
-
-  .table-cell-subtitle {
+  .section-subheading {
     @apply mt-1 text-sm text-slate-500;
   }
 
+  /* ---------- Tables ---------- */
+  .table-shell {
+    @apply flex flex-col;
+  }
+  .table-shell-scroll {
+    @apply -m-1.5 overflow-x-auto;
+  }
+  .table-shell-inner {
+    @apply inline-block min-w-full p-1.5 align-middle;
+  }
+  .table-shell-card {
+    @apply overflow-hidden rounded-2xl border border-slate-200/80 bg-white;
+  }
+  .table-root {
+    @apply min-w-full text-sm;
+  }
+  .table-root thead {
+    @apply bg-slate-50;
+  }
+  .table-root th {
+    @apply whitespace-nowrap border-b border-slate-200 px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500;
+  }
+  .table-root td {
+    @apply border-b border-slate-100 px-5 py-4 align-middle text-slate-700;
+  }
+  .table-root tbody tr {
+    @apply bg-white transition hover:bg-brand-50/40;
+  }
+  .table-root tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-cell-title {
+    @apply font-semibold text-slate-800;
+  }
+  .table-cell-subtitle {
+    @apply mt-0.5 text-xs text-slate-400;
+  }
   .table-toolbar {
     @apply mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between;
   }
-
   .table-toolbar-meta {
-    @apply inline-flex items-center gap-x-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-slate-600;
+    @apply inline-flex items-center gap-x-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600;
   }
-
   .table-empty {
-    @apply px-6 py-10 text-center text-sm text-slate-500;
+    @apply px-6 py-12 text-center text-sm text-slate-500;
   }
 
+  /* ---------- Badges ---------- */
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
   }
-
+  .badge-dot {
+    @apply size-1.5 rounded-full bg-current;
+  }
   .badge-emerald {
-    @apply bg-emerald-100 text-emerald-700;
+    @apply bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20;
   }
-
   .badge-amber {
-    @apply bg-amber-100 text-amber-700;
+    @apply bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20;
   }
-
   .badge-rose {
-    @apply bg-rose-100 text-rose-700;
+    @apply bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20;
   }
-
   .badge-slate {
-    @apply bg-slate-100 text-slate-700;
+    @apply bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-500/15;
+  }
+  .badge-brand {
+    @apply bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-600/20;
+  }
+  .badge-sky {
+    @apply bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-600/20;
   }
 
+  /* ---------- Buttons ---------- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-x-2 rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800;
+    @apply inline-flex items-center justify-center gap-x-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-900/15;
   }
-
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-x-2 rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50;
+    @apply inline-flex items-center justify-center gap-x-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200;
   }
-
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-x-2 rounded-xl border border-transparent px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+    @apply inline-flex items-center justify-center gap-x-2 rounded-xl border border-transparent px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
   }
-
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-x-2 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-500;
+    @apply inline-flex items-center justify-center gap-x-2 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-500 focus:outline-none focus:ring-4 focus:ring-rose-500/20;
+  }
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-x-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lift transition hover:from-brand-500 hover:to-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/25;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
   }
 
+  /* ---------- Forms ---------- */
+  .form-page-wrap {
+    @apply mx-auto max-w-3xl;
+  }
   .form-panel {
-    @apply overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/80;
+    @apply overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card;
   }
-
-  .form-panel-hero {
-    @apply border-b border-slate-200 bg-white px-6 py-7 text-slate-900 sm:px-10;
+  .form-modal-shell {
+    @apply overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card;
   }
-
-  .form-panel-body {
-    @apply p-6 sm:p-10;
+  .form-modal-shell-compact {
+    @apply mx-auto max-w-xl overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card;
   }
-
   .form-modal-header {
-    @apply flex flex-col gap-2 border-b border-slate-200 px-6 py-6 sm:px-8;
+    @apply border-b border-slate-200 bg-slate-50/60 px-6 py-5 sm:px-8;
   }
-
   .form-modal-title {
-    @apply text-2xl font-semibold tracking-tight text-slate-900;
+    @apply text-lg font-semibold tracking-tight text-slate-900;
   }
-
   .form-modal-description {
-    @apply text-sm leading-6 text-slate-500;
+    @apply mt-1 text-sm leading-6 text-slate-500;
   }
-
   .form-modal-body {
-    @apply px-6 py-6 sm:px-8 sm:py-7;
+    @apply px-6 py-6 sm:px-8;
   }
-
   .form-modal-footer {
-    @apply flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 px-6 py-5 sm:px-8;
+    @apply flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4 sm:px-8;
+  }
+  .form-grid {
+    @apply grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2;
+  }
+  .form-field {
+    @apply flex flex-col;
+  }
+  .form-field-full {
+    @apply sm:col-span-2;
+  }
+  .field-label {
+    @apply mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700;
+  }
+  .field-required-dot {
+    @apply text-rose-500;
+  }
+  .form-help {
+    @apply mt-1.5 text-xs text-slate-400;
+  }
+  .form-error {
+    @apply mt-1.5 text-xs font-medium text-rose-600;
   }
 
+  /* Legacy form classes kept for any un-migrated templates */
   .form-stack {
-    @apply space-y-8;
+    @apply space-y-6;
   }
-
-  .form-row {
-    @apply grid gap-3 border-t border-slate-200 py-5 first:border-transparent first:pt-0 sm:grid-cols-12 sm:gap-6;
-  }
-
-  .form-row-label {
-    @apply sm:col-span-3;
-  }
-
-  .form-row-field {
-    @apply sm:col-span-9;
-  }
-
-  .form-row-full .form-row-label,
-  .form-row-full .form-row-field {
-    @apply sm:col-span-12;
-  }
-
   .form-actions {
-    @apply flex flex-wrap items-center justify-end gap-4 border-t border-slate-200 pt-8;
+    @apply flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-6;
   }
-
   .form-kicker {
     @apply hidden;
   }
-
   .form-title {
-    @apply text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl;
+    @apply text-2xl font-semibold tracking-tight text-slate-900;
   }
-
   .form-description {
     @apply mt-2 max-w-3xl text-sm leading-6 text-slate-500;
   }
 
-  .field-label {
-    @apply inline-block text-sm font-medium text-slate-800 sm:mt-3;
+  /* ---------- Toolbar / filters ---------- */
+  .filter-bar {
+    @apply mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between;
+  }
+  .search-input {
+    @apply w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm shadow-sm focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 sm:w-72;
+  }
+  .filter-select {
+    @apply rounded-xl border border-slate-300 bg-white py-2.5 pl-3 pr-9 text-sm shadow-sm focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15;
   }
 
-  .form-help {
-    @apply mt-2 text-sm text-slate-500;
+  /* ---------- Pagination ---------- */
+  .pagination-link {
+    @apply inline-flex min-w-[2.25rem] items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50;
+  }
+  .pagination-link-active {
+    @apply border-brand-600 bg-brand-600 text-white hover:bg-brand-600;
+  }
+  .pagination-link-disabled {
+    @apply cursor-not-allowed opacity-40;
   }
 
-  .form-error {
-    @apply mt-1 text-sm text-rose-600;
+  /* ---------- Progress ---------- */
+  .progress-track {
+    @apply h-2 w-full overflow-hidden rounded-full bg-slate-100;
+  }
+  .progress-bar {
+    @apply h-full rounded-full bg-gradient-to-r from-brand-600 to-brand-400 transition-all;
   }
 
+  /* ---------- Misc ---------- */
   .empty-shell {
-    @apply rounded-2xl border border-dashed border-slate-300 bg-white px-8 py-14 text-center shadow-sm;
+    @apply flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 px-8 py-14 text-center;
   }
-
   .link-strong {
-    @apply font-semibold text-slate-900 transition hover:text-cyan-700;
+    @apply font-semibold text-slate-900 transition hover:text-brand-700;
   }
-
-  .auth-card {
-    @apply page-shell p-8 lg:p-10;
-  }
-
   .stat-kicker {
     @apply text-xs font-semibold uppercase tracking-[0.28em] text-slate-400;
   }
+  .data-row {
+    @apply flex items-center justify-between gap-4 rounded-xl border border-slate-200/70 bg-slate-50/60 px-4 py-3;
+  }
+  .data-row-label {
+    @apply text-sm text-slate-500;
+  }
+  .data-row-value {
+    @apply text-sm font-semibold text-slate-900;
+  }
+  .auth-card {
+    @apply rounded-3xl border border-white/10 bg-white p-8 shadow-2xl shadow-slate-950/40 lg:p-10;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    @apply fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-slate-950/50 p-4 backdrop-blur-sm sm:items-center;
+    animation: modal-fade 0.16s ease-out;
+  }
+  .modal-card {
+    @apply relative my-6 w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/30;
+    animation: modal-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-head {
+    @apply flex items-start justify-between gap-4 border-b border-slate-200 bg-slate-50/60 px-6 py-5 sm:px-8;
+  }
+  .modal-close {
+    @apply inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-800;
+  }
+  .modal-body {
+    @apply max-h-[60vh] overflow-y-auto px-6 py-6 sm:px-8;
+  }
+  .modal-foot {
+    @apply flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4 sm:px-8;
+  }
+  .htmx-request .htmx-indicator-hide {
+    @apply opacity-70;
+  }
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (min-width: 1024px) {

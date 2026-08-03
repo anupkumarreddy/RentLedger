@@ -5,50 +5,68 @@
 {% block page_title %}Expenses{% endblock %}
 {% block breadcrumb_title %}Expenses{% endblock %}
 {% block mobile_page_title %}Expenses{% endblock %}
-{% block page_actions %}<a href="{% url 'expenses:create' %}" class="btn-primary">Add expense</a>{% endblock %}
+{% block page_subtitle %}Maintenance, repair, tax, utility, and operating costs.{% endblock %}
+{% block page_actions %}
+<div class="flex flex-wrap gap-2">
+  <a href="{% url 'expenses:export' %}?{{ request.GET.urlencode }}" class="btn-secondary">
+    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+    Export CSV
+  </a>
+  <a href="{% url 'expenses:create' %}" class="btn-brand" hx-get="{% url 'expenses:create' %}" hx-target="#modal-root" hx-swap="innerHTML">
+    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    Add expense
+  </a>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="metric-card-strong mb-6">
-  <p class="text-sm uppercase tracking-[0.3em] text-slate-300">This month</p>
-  <p class="mt-2 text-3xl font-semibold">{{ monthly_total|currency }}</p>
+<div class="mb-5 grid gap-4 sm:grid-cols-3">
+  <div class="metric-card-strong">
+    <p class="relative text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">Spent this month</p>
+    <p class="relative mt-2 text-3xl font-bold">{{ monthly_total|currency }}</p>
+  </div>
+  <div class="metric-card">
+    <p class="metric-label">Records shown</p>
+    <p class="metric-value">{{ page_obj.paginator.count }}</p>
+  </div>
+  <div class="metric-card">
+    <p class="metric-label">Export</p>
+    <p class="mt-3 text-sm text-slate-500">Download the filtered ledger as CSV from the header.</p>
+  </div>
 </div>
 
 <div class="section-card-tight">
-  <div class="table-toolbar">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">Expense ledger</h2>
-      <p class="mt-1 text-sm text-slate-500">Maintenance, repair, tax, utility, and operating expenses for the rental portfolio.</p>
-    </div>
-    <span class="table-toolbar-meta">{{ expenses|length }} total</span>
-  </div>
+  {% include "includes/ui/list_toolbar.html" %}
 
-  {% include "includes/ui/table_shell_start.html" %}
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Category</th>
-      <th>Property</th>
-      <th>Amount</th>
-    </tr>
-  </thead>
+  {% if expenses %}
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Property</th>
+        <th>Method</th>
+        <th class="text-right">Amount</th>
+      </tr>
+    </thead>
     <tbody>
       {% for expense in expenses %}
         <tr>
-          <td>
-            <div class="table-cell-title">{{ expense.expense_date }}</div>
-            <div class="table-cell-subtitle">{{ expense.payment_method|default:"Recorded expense" }}</div>
-          </td>
-          <td><span class="badge badge-slate">{{ expense.get_category_display }}</span></td>
+          <td class="text-slate-600">{{ expense.expense_date }}</td>
+          <td><span class="badge badge-brand">{{ expense.get_category_display }}</span></td>
           <td>
             <div class="text-sm font-medium text-slate-800">{{ expense.property.name|default:"Unassigned" }}</div>
-            <div class="table-cell-subtitle">{{ expense.notes|default:"No notes added"|truncatechars:52 }}</div>
+            <div class="table-cell-subtitle">{{ expense.vendor_name|default:expense.notes|default:"—"|truncatechars:40 }}</div>
           </td>
-          <td><span class="table-cell-title">{{ expense.amount|currency }}</span></td>
+          <td class="text-slate-500">{{ expense.get_payment_method_display }}</td>
+          <td class="text-right"><span class="table-cell-title">{{ expense.amount|currency }}</span></td>
         </tr>
-      {% empty %}
-        <tr><td colspan="4" class="table-empty">No expenses recorded.</td></tr>
-    {% endfor %}
-  </tbody>
-  {% include "includes/ui/table_shell_end.html" %}
+      {% endfor %}
+    </tbody>
+    {% include "includes/ui/table_shell_end.html" %}
+    {% include "includes/ui/pagination.html" %}
+  {% else %}
+    {% include "includes/ui/empty_state.html" with title="No expenses found" body="Record maintenance, tax, and utility costs to track true net yield." cta_url="/expenses/add/" cta_label="Add expense" cta_modal=True %}
+  {% endif %}
 </div>
 {% endblock %}

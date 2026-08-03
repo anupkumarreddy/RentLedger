@@ -4,24 +4,25 @@
 {% block page_title %}{% if form.instance.pk %}Edit lease{% else %}Create lease{% endif %}{% endblock %}
 {% block breadcrumb_title %}Leases{% endblock %}
 {% block mobile_page_title %}{% if form.instance.pk %}Edit lease{% else %}Create lease{% endif %}{% endblock %}
+{% block page_subtitle %}Rent, billing rules, contract dates, and documentation.{% endblock %}
 
 {% block content %}
 <div class="form-page-wrap">
   <div class="form-modal-shell">
     <div class="form-modal-header">
       <h2 class="form-modal-title">Lease configuration</h2>
-      <p class="form-modal-description">Connect a property and tenant, then define rent, billing rules, contract dates, and supporting documentation.</p>
+      <p class="form-modal-description">Connect a property and tenant, then define rent and billing rules. Activating a lease generates its installment schedule.</p>
     </div>
-    <div class="form-modal-body">
-      <form method="post" enctype="multipart/form-data" class="form-stack">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% include "includes/ui/form_fields.html" with full_width_fields="notes,lease_document" %}
-        <div class="form-modal-footer -mx-6 -mb-6 mt-8 sm:-mx-8 sm:-mb-7">
-          <a href="{% url 'leases:list' %}" class="btn-secondary">Cancel</a>
-          <button type="submit" class="btn-primary">Save lease</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-modal-body">
+        {% include "includes/ui/form_fields.html" with full_width_fields="notes,lease_document" %}
+      </div>
+      <div class="form-modal-footer">
+        <a href="{% url 'leases:list' %}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-brand">Save lease</button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}

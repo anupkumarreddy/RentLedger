@@ -5,44 +5,51 @@
 {% block page_title %}Due installments{% endblock %}
 {% block breadcrumb_title %}Payments{% endblock %}
 {% block mobile_page_title %}Due installments{% endblock %}
-{% block page_actions %}<div class="flex flex-wrap gap-3"><a href="{% url 'payments:create' %}" class="btn-primary">Record payment</a><a href="{% url 'payments:history' %}" class="btn-secondary">Payment history</a></div>{% endblock %}
+{% block page_subtitle %}Expected rent charges, current status, and outstanding balances.{% endblock %}
+{% block page_actions %}
+<div class="flex flex-wrap gap-2">
+  <a href="{% url 'payments:overdue_list' %}" class="btn-secondary">Overdue</a>
+  <a href="{% url 'payments:history' %}" class="btn-secondary">History</a>
+  <a href="{% url 'payments:create' %}" class="btn-brand" hx-get="{% url 'payments:create' %}" hx-target="#modal-root" hx-swap="innerHTML">
+    <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    Record payment
+  </a>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="section-card-tight">
-  <div class="table-toolbar">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">Scheduled dues</h2>
-      <p class="mt-1 text-sm text-slate-500">Expected rent charges, current status, and outstanding balances.</p>
-    </div>
-    <span class="table-toolbar-meta">Actionable</span>
-  </div>
-  {% include "includes/ui/table_shell_start.html" %}
-  <thead>
-    <tr>
-      <th>Lease</th>
-      <th>Due date</th>
-      <th>Status</th>
-      <th>Outstanding</th>
-    </tr>
-  </thead>
+  {% include "includes/ui/list_toolbar.html" %}
+
+  {% if installments %}
+    {% include "includes/ui/table_shell_start.html" %}
+    <thead>
+      <tr>
+        <th>Lease</th>
+        <th>Due date</th>
+        <th>Status</th>
+        <th class="text-right">Outstanding</th>
+        <th></th>
+      </tr>
+    </thead>
     <tbody>
       {% for installment in installments %}
         <tr>
           <td>
-            <a href="{{ installment.get_absolute_url }}" class="table-cell-title hover:text-cyan-700">{{ installment.lease.property.name }}</a>
+            <a href="{{ installment.get_absolute_url }}" class="table-cell-title hover:text-brand-700">{{ installment.lease.property.name }}</a>
             <div class="table-cell-subtitle">{{ installment.lease.tenant.full_name }}</div>
           </td>
-          <td>
-            <div class="text-sm text-slate-700">{{ installment.due_date }}</div>
-            <div class="table-cell-subtitle">Billing cycle item</div>
-          </td>
-          <td><span class="badge badge-slate">{{ installment.get_status_display }}</span></td>
-          <td><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
+          <td class="text-slate-600">{{ installment.due_date }}</td>
+          <td><span class="badge {{ installment.status|badge_class }}"><span class="badge-dot"></span>{{ installment.get_status_display }}</span></td>
+          <td class="text-right"><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
+          <td class="text-right"><a href="{{ installment.get_absolute_url }}" class="btn-ghost btn-sm">View</a></td>
         </tr>
-      {% empty %}
-        <tr><td colspan="4" class="table-empty">No due installments right now.</td></tr>
       {% endfor %}
     </tbody>
-  {% include "includes/ui/table_shell_end.html" %}
+    {% include "includes/ui/table_shell_end.html" %}
+    {% include "includes/ui/pagination.html" %}
+  {% else %}
+    {% include "includes/ui/empty_state.html" with title="No dues found" body="Installments appear here once a lease is activated." %}
+  {% endif %}
 </div>
 {% endblock %}
