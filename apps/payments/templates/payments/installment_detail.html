@@ -9,7 +9,15 @@
 {% block page_actions %}
 <div class="flex flex-wrap gap-2">
   <a href="{% url 'payments:due_list' %}" class="btn-secondary">Back</a>
-  <a href="{% url 'payments:create' %}" class="btn-brand" hx-get="{% url 'payments:create' %}" hx-target="#modal-root" hx-swap="innerHTML">Record payment</a>
+  {% if installment.outstanding_amount > 0 %}
+    <form method="post" action="{% url 'payments:installment_mark_paid' installment.pk %}" onsubmit="return confirm('Mark this installment as paid in full ({{ installment.outstanding_amount|currency }})?');">
+      {% csrf_token %}
+      <button type="submit" class="btn-secondary">Mark paid in full</button>
+    </form>
+    <a href="{% url 'payments:installment_pay' installment.pk %}" class="btn-brand" hx-get="{% url 'payments:installment_pay' installment.pk %}" hx-target="#modal-root" hx-swap="innerHTML">Record payment</a>
+  {% else %}
+    <span class="badge badge-emerald"><span class="badge-dot"></span>Fully paid</span>
+  {% endif %}
 </div>
 {% endblock %}
 
@@ -29,6 +37,16 @@
       <div class="data-row"><dt class="data-row-label">Paid</dt><dd class="data-row-value text-emerald-600">{{ installment.amount_paid|currency }}</dd></div>
       <div class="data-row"><dt class="data-row-label">Outstanding</dt><dd class="data-row-value {% if installment.outstanding_amount > 0 %}text-rose-600{% endif %}">{{ installment.outstanding_amount|currency }}</dd></div>
     </dl>
+    <div class="mt-5">
+      <div class="mb-1.5 flex items-center justify-between text-xs text-slate-500">
+        <span>Collected</span><span class="font-semibold text-slate-700">{{ paid_percent }}%</span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" style="width: {{ paid_percent }}%"></div></div>
+      <div class="mt-2 flex items-center justify-between text-xs text-slate-400">
+        <span>{{ installment.amount_paid|currency }} paid</span>
+        <span>of {{ total_billed|currency }}</span>
+      </div>
+    </div>
   </section>
 
   <section class="section-card-tight">

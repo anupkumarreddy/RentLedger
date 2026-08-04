@@ -110,6 +110,47 @@ def allocate_payment(payment, installments=None):
 
 
 @transaction.atomic
+def record_installment_payment(
+    *,
+    installment,
+    amount,
+    payment_method,
+    payment_date=None,
+    reference_number="",
+    notes="",
+    created_by=None,
+):
+    """Record a payment applied directly against a single installment.
+
+    Supports paying the installment in full or a partial amount. The amount may
+    not exceed the installment's current outstanding balance.
+    """
+    recalculate_installment(installment)
+    amount = quantize_money(amount)
+    if amount <= 0:
+        raise ValidationError("Payment amount must be greater than zero.")
+    if amount > installment.outstanding_amount:
+        raise ValidationError("Amount cannot exceed the outstanding balance for this installment.")
+
+    lease = installment.lease
+    payment = Payment(
+        landlord=installment.landlord,
+        created_by=created_by,
+        lease=lease,
+        tenant=lease.tenant,
+        payment_date=payment_date or timezone.localdate(),
+        amount=amount,
+        payment_method=payment_method,
+        reference_number=reference_number,
+        notes=notes,
+    )
+    payment.full_clean()
+    payment.save()
+    allocate_payment(payment, installments=[installment])
+    return payment
+
+
+@transaction.atomic
 def record_payment(*, landlord, created_by, **data):
     lease = data["lease"]
     tenant = data["tenant"]

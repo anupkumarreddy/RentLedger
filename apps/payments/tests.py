@@ -8,7 +8,11 @@ from django.utils import timezone
 
 from apps.common.models import LeaseStatus
 from apps.leases.models import Lease
-from apps.payments.services import generate_payment_schedule, record_payment
+from apps.payments.services import (
+    generate_payment_schedule,
+    record_installment_payment,
+    record_payment,
+)
 from apps.properties.models import Property
 from apps.tenants.models import Tenant
 
@@ -102,6 +106,50 @@ class PaymentServiceTests(TestCase):
                 reference_number="BANK123",
                 notes="Invalid payment",
                 audit_note="Created for test",
+            )
+
+    def test_installment_partial_payment_targets_only_that_installment(self):
+        installments = list(self.lease.installments.order_by("due_date"))
+        first, second = installments[0], installments[1]
+
+        record_installment_payment(
+            installment=first,
+            amount=Decimal("5000.00"),
+            payment_method="cash",
+            created_by=self.landlord,
+        )
+
+        first.refresh_from_db()
+        second.refresh_from_db()
+        self.assertEqual(first.status, "partial")
+        self.assertEqual(first.amount_paid, Decimal("5000.00"))
+        self.assertEqual(first.outstanding_amount, Decimal("15000.00"))
+        # The payment must not spill onto other installments.
+        self.assertEqual(second.amount_paid, Decimal("0.00"))
+        self.assertEqual(second.status, "unpaid")
+
+    def test_installment_full_payment_marks_it_paid(self):
+        installment = self.lease.installments.order_by("due_date").first()
+
+        record_installment_payment(
+            installment=installment,
+            amount=installment.outstanding_amount,
+            payment_method="bank_transfer",
+            created_by=self.landlord,
+        )
+
+        installment.refresh_from_db()
+        self.assertEqual(installment.status, "paid")
+        self.assertEqual(installment.outstanding_amount, Decimal("0.00"))
+
+    def test_installment_payment_cannot_exceed_outstanding(self):
+        installment = self.lease.installments.order_by("due_date").first()
+        with self.assertRaises(ValidationError):
+            record_installment_payment(
+                installment=installment,
+                amount=Decimal("25000.00"),
+                payment_method="cash",
+                created_by=self.landlord,
             )
 
     def test_overdue_fixed_late_fee_is_assessed_before_allocation(self):

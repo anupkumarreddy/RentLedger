@@ -42,7 +42,14 @@
           <td class="text-slate-600">{{ installment.due_date }}</td>
           <td><span class="badge {{ installment.status|badge_class }}"><span class="badge-dot"></span>{{ installment.get_status_display }}</span></td>
           <td class="text-right"><span class="table-cell-title">{{ installment.outstanding_amount|currency }}</span></td>
-          <td class="text-right"><a href="{{ installment.get_absolute_url }}" class="btn-ghost btn-sm">View</a></td>
+          <td class="text-right">
+            <div class="flex items-center justify-end gap-1">
+              {% if installment.outstanding_amount > 0 %}
+                <a href="{% url 'payments:installment_pay' installment.pk %}" class="btn-ghost btn-sm text-brand-700" hx-get="{% url 'payments:installment_pay' installment.pk %}" hx-target="#modal-root" hx-swap="innerHTML">Pay</a>
+              {% endif %}
+              <a href="{{ installment.get_absolute_url }}" class="btn-ghost btn-sm">View</a>
+            </div>
+          </td>
         </tr>
       {% endfor %}
     </tbody>

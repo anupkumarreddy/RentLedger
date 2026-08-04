@@ -1,0 +1,29 @@
+{% extends "base_app.html" %}
+{% load common_tags %}
+
+{% block title %}Record payment{% endblock %}
+{% block page_title %}Record payment{% endblock %}
+{% block breadcrumb_title %}Payments{% endblock %}
+{% block mobile_page_title %}Record payment{% endblock %}
+{% block page_subtitle %}Apply a full or partial payment to this installment.{% endblock %}
+
+{% block content %}
+<div class="form-page-wrap">
+  <div class="form-modal-shell">
+    <div class="form-modal-header">
+      <h2 class="form-modal-title">Record payment</h2>
+      <p class="form-modal-description">{{ installment.lease.property.name }} · due {{ installment.due_date }} · outstanding {{ installment.outstanding_amount|currency }}</p>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-modal-body">
+        {% include "includes/ui/form_fields.html" with full_width_fields="notes" %}
+      </div>
+      <div class="form-modal-footer">
+        <a href="{{ installment.get_absolute_url }}" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-brand">Record payment</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
